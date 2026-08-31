@@ -1,0 +1,68 @@
+# VISUALISASI DENGAN GGPLOT2
+# Konsep: ggplot2 bersifat layer-based. Setiap geom_sf() = satu layer peta.
+# Bisa digabung, diberi warna, judul, skala, arah utara, dan basemap.
+
+# 1. Install dan load package
+install.packages(c("ggplot2", "sf", "ggspatial", "gridExtra"))
+library(ggplot2)
+
+# 2. Plot dasar
+ggplot() +
+  geom_sf(data = adm)
+
+# 3. Fokus pada area tertentu
+bb <- st_bbox(shp6)  # bounding box
+
+ggplot() +
+  geom_sf(data = adm_utm) +
+  geom_sf(data = shp6) +
+  coord_sf(
+    xlim = c(bb["xmin"], bb["xmax"]),
+    ylim = c(bb["ymin"], bb["ymax"])
+  )
+
+# 4. Menambahkan warna dan layer
+ggplot() +
+  geom_sf(data = adm_utm, color = "black", fill = "yellow") +
+  geom_sf(data = shp6, color = "red") +
+  coord_sf(
+    xlim = c(bb["xmin"], bb["xmax"]),
+    ylim = c(bb["ymin"], bb["ymax"])
+  )
+
+# 5. Judul peta
+ggplot() +
+  geom_sf(data = adm, color = "yellow", fill = "#CB4154") +
+  ggtitle("Peta Kota Bandung") +
+  theme(plot.title = element_text(family = "mono", hjust = 0.5)) # judul di tengah
+
+# 6. Menambah layer peta
+ggplot() +
+  geom_sf(data = shp2, fill = "yellow", color = NA) +  # bangunan
+  geom_sf(data = shp4, color = "black")               # jalan
+
+library(ggspatial)
+# 7. Basemap + legenda + skala + north arrow
+ggplot() +
+  annotation_map_tile(type = "osm", zoom = 12) +
+  geom_sf(data = shp2, aes(fill = "Wilayah Bandung"), color = NA) +
+  geom_sf(data = shp4, aes(color = "Jalan"), linewidth = 1.2) +
+  scale_fill_manual(name = "Legenda", values = c("Wilayah Bandung" = "yellow")) +
+  scale_color_manual(name = NULL, values = c("Jalan" = "red")) +
+  annotation_north_arrow(
+    location = "tr",
+    which_north = "true",
+    style = north_arrow_fancy_orienteering
+  ) +
+  annotation_scale(
+    location = "br",
+    width_hint = 0.3
+  ) +
+  ggtitle("Peta Kota Bandung dengan Basemap") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.position = "right"
+  )
+
+-----------------------------------------SELESAI-------------------------------------------
