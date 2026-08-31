@@ -1,0 +1,172 @@
+CLOROPET
+
+# 1. pastikan package sudah ada
+library(ggspatial)
+
+# 2. Plot Peta sederhana
+ggplot() +
+  geom_sf(data = adm, aes(fill = PENDUDUK))+
+  ggtitle("Peta Choropleth")
+
+
+# 3. Beberapa warna tapi hanya : kuning - hijau - biru - ungu
+ggplot() +
+  geom_sf(data = adm, aes(fill = PENDUDUK))+
+  scale_fill_viridis_c(
+    name = "Jumlah Penduduk",
+  )+
+ggtitle("Peta Choropleth Kuning - Ungu")
+
+
+# 4. Mengatur agar warna lebih flexible
+ggplot(adm) +
+  geom_sf(aes(fill = PENDUDUK), color = "white", linewidth = 0.2) +
+  scale_fill_gradient(
+    name = "Jumlah Penduduk",
+    low = "navy",
+    high = "red",
+  ) +
+  ggtitle("Choropleth Penduduk per Kelurahan") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
+
+
+# 5. Mengatur warna dengan palette Set 3
+ggplot(shp) +
+  geom_sf(aes(fill = KOTA), color = "white", linewidth = 0.2) +
+  scale_fill_brewer(palette = "Set3",
+                    name = "Jumlah Penduduk",
+                    
+  ) +
+  ggtitle("Choropleth Penduduk per Kelurahan") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
+
+# 6. Banyak warna
+ggplot(adm) +
+  geom_sf(aes(fill = WADMKC), color = "white", linewidth = 0.2) +
+  scale_fill_hue(name = "Kecamatan") +
+  ggtitle("Choropleth per Kecamatan") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
+
+# 7. Mengatur warna secara manual
+unique(adm$WADMKC)
+ggplot(adm) +
+  geom_sf(
+    aes(fill = WADMKC),
+    color = "white",
+    linewidth = 0.2
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Regol" = "#E41A1C",
+      "Antapani" = "#377EB8",
+      "Cicendo" = "#4DAF4A",
+      "Bojongloa Kaler" = "#984EA3",
+      "Sumur Bandung" = "#FF7F00",
+      "Babakan Ciparay" = "#FFFF33",
+      "Cinambo" = "#A65628",
+      "Kiaracondong" = "#F781BF",
+      "Bandung Kidul" = "#999999",
+      "Batununggal" = "#66C2A5",
+      "Mandalajati" = "#FC8D62",
+      "Astana Anyar" = "#8DA0CB",
+      "Andir" = "#E78AC3",
+      "Bojongloa Kidul" = "#A6D854",
+      "Coblong" = "#FFD92F",
+      "Cidadap" = "#E5C494",
+      "Lengkong" = "#B3B3B3",
+      "Bandung Kulon" = "#1B9E77",
+      "Cibeunying Kidul" = "#D95F02",
+      "Cibeunying Kaler" = "#7570B3",
+      "Ujungberung" = "#E7298A",
+      "Bandung Wetan" = "#66A61E",
+      "Buahbatu" = "#E6AB02",
+      "Gedebage" = "#A6761D",
+      "Panyileukan" = "#666666",
+      "Cibiru" = "#1F78B4",
+      "Rancasari" = "#33A02C",
+      "Sukajadi" = "#FB9A99",
+      "Arcamanik" = "#CAB2D6",
+      "Sukasari" = "#B2DF8A"
+    ),
+    
+    name = "Kecamatan"
+  ) +
+  
+  ggtitle("Peta Kecamatan Kota Bandung") +
+  
+  theme_minimal() +
+  
+  theme(
+    plot.title = element_text(
+      hjust = 0.5,
+      face = "bold"
+    )
+  )
+
+# 8. Mengatur letak legenda
+
+ggplot(adm) +
+  geom_sf(
+    aes(fill = WADMKC),
+    color = "white",
+    linewidth = 0.2
+  ) +
+  
+  scale_fill_manual(
+    values = c(
+      "Regol" = "#E41A1C",
+      "Antapani" = "#377EB8",
+      "Cicendo" = "#4DAF4A",
+      "Bojongloa Kaler" = "#984EA3",
+      "Sumur Bandung" = "#FF7F00",
+      "Babakan Ciparay" = "#FFFF33",
+      "Cinambo" = "#A65628",
+      "Kiaracondong" = "#F781BF",
+      "Bandung Kidul" = "#999999",
+      "Batununggal" = "#66C2A5",
+      "Mandalajati" = "#FC8D62",
+      "Astana Anyar" = "#8DA0CB",
+      "Andir" = "#E78AC3",
+      "Bojongloa Kidul" = "#A6D854",
+      "Coblong" = "#FFD92F",
+      "Cidadap" = "#E5C494",
+      "Lengkong" = "#B3B3B3",
+      "Bandung Kulon" = "#1B9E77",
+      "Cibeunying Kidul" = "#D95F02",
+      "Cibeunying Kaler" = "#7570B3",
+      "Ujungberung" = "#E7298A",
+      "Bandung Wetan" = "#66A61E",
+      "Buahbatu" = "#E6AB02",
+      "Gedebage" = "#A6761D",
+      "Panyileukan" = "#666666",
+      "Cibiru" = "#1F78B4",
+      "Rancasari" = "#33A02C",
+      "Sukajadi" = "#FB9A99",
+      "Arcamanik" = "#CAB2D6",
+      "Sukasari" = "#B2DF8A"
+    ),
+    
+    name = "Kecamatan"
+  ) +
+  
+  ggtitle("Peta Kecamatan Kota Bandung") +
+  
+  theme_minimal() +
+  
+  theme(
+    plot.title = element_text(
+      hjust = 0.5,
+      face = "bold"
+    ),
+    
+    legend.position = "bottom"
+  )-----------------------------------------SELESAI-------------------------------------------
