@@ -1,0 +1,159 @@
+library (dplyr)
+
+# b. Operasi dissolve
+kecamatan <- adm_utm |>
+  group_by(WADMKC) |>
+  summarise()
+
+plot(kecamatan)
+
+
+# Menambahkan data
+# 2. Menambah baris/data
+# definisikan kotak
+geom_baru <- st_sfc(
+  st_polygon(
+    list(
+      matrix(
+        c(
+          796000, 9230000,
+          797000, 9230000,
+          797000, 9231000,
+          796000, 9231000,
+          796000, 9230000
+        ),
+        ncol = 2,
+        byrow = TRUE
+      )
+    )
+  ),
+  crs = st_crs(adm_utm)
+)
+
+# cek CRS
+st_crs(kecamatan) == st_crs(geom_baru)
+
+# buat sf baru
+baru <- st_sf(
+  WADMKC = "BARU",
+  geometry = geom_baru
+)
+
+# gabungkan
+atribut <- rbind(kecamatan, baru)
+
+# plot
+plot(atribut)
+
+
+# 3. Menambah kolom
+
+# a. Masukkan nama kolom baru
+shp <- adm_utm |>
+  mutate(
+    KODEBARU = NA,
+    STATUS = ""
+  )
+names(shp)
+
+# b. Menghapus kolom
+shp <- shp |>
+  select(-KODEBARU, -STATUS)
+
+names(shp) 
+
+# 4. Menambah banyak titik
+# a. Masukkan koordinat polygon dalam UTM 48S
+polygons <- list(
+  
+  # Polygon 1
+  matrix(
+    c(
+      796000, 9230000,
+      797000, 9230000,
+      797000, 9231000,
+      796000, 9231000,
+      796000, 9230000
+    ),
+    ncol = 2,
+    byrow = TRUE
+  ),
+  
+  # Polygon 2
+  matrix(
+    c(
+      797200, 9230000,
+      798200, 9230000,
+      798200, 9231000,
+      797200, 9231000,
+      797200, 9230000
+    ),
+    ncol = 2,
+    byrow = TRUE
+  ),
+  
+  # Polygon 3
+  matrix(
+    c(
+      796000, 9228500,
+      797000, 9228500,
+      797000, 9229500,
+      796000, 9229500,
+      796000, 9228500
+    ),
+    ncol = 2,
+    byrow = TRUE
+  )
+)
+
+geom_polygons <- st_sfc(
+  lapply(
+    polygons,
+    function(m) st_polygon(list(m))
+  ),
+  crs = 32748
+)
+
+# b. Buat atribut
+attr <- data.frame(
+  WADMKC = c("BARU 1", "BARU 2", "BARU 3")
+)
+
+# c. Gabungkan atribut + geometry
+area_sf <- st_sf(
+  attr,
+  geometry = geom_polygons
+)
+
+# d. Gabungkan dengan kecamatan
+atribut <- rbind(
+  kecamatan,
+  area_sf
+)
+
+# f. Plot
+plot(atribut)
+
+# 5. Menambahkan data tabular ke dalam shapefile 
+# a. Baca data tabularnya dulu
+kesehatan <- read.csv("Fasilitas_Kesehatan.csv")
+
+# a. left join
+# semua yang di data pertama disebut dipertahankan
+adm_utm_kesehatan_l <- adm_utm |>
+  left_join(kesehatan, by = "KDEPUM")
+
+# b. right join
+# semua yang di data kedua disebut dipertahankan
+adm_utm_kesehatan_r <- adm_utm |>
+  right_join(kesehatan, by = "KDEPUM")
+
+# c. inner join
+# Hanya data yang cocok di kedua table
+adm_utm_kesehatan_i <- adm_utm |>
+  inner_join(kesehatan, by = "KDEPUM")
+
+# e. Menggabungkan dengan fulljoin
+# Semua data dari kedua tabel digabung
+adm_utm_kesehatan <- adm_utm |>
+  full_join(kesehatan, by = "KDEPUM")
