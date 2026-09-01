@@ -1,0 +1,28 @@
+CONDITIONAL STATEMENTS
+
+Conditional statements di R memungkinkan kita membuat keputusan dalam program.
+Kode akan dijalankan berdasarkan kondisi tertentu.
+
+Struktur dasar conditional statement di R menggunakan if, else if, dan else.
+
+
+Struktur Sintaks Conditional Statement:
+if (kondisi_1) {
+# Eksekusi jika kondisi_1 bernilai TRUE
+} else if (kondisi_2) {
+# Eksekusi jika kondisi_1 FALSE dan kondisi_2 TRUE
+} else {
+# Eksekusi jika semua kondisi bernilai FALSE
+}
+
+nilai <- 90
+
+if (nilai >= 85) {
+  print("A")
+} else if (nilai >= 75) {
+  print("B")
+} else {
+  print("C")
+}
+
+-----------------------------------------SELESAI-------------------------------------------
