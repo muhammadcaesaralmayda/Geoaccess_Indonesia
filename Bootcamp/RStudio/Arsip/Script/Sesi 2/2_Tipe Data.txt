@@ -1,0 +1,49 @@
+TIPE DATA
+
+R memiliki beberapa tipe data dasar, antara lain:
+- integer : bilangan bulat
+- double : bilangan (bulat dan desimal)
+- komplek : menyimpan data komplek (i^2 = -1)
+- character: teks atau string
+- logical : TRUE atau FALSE
+- raw : menyimpan dalam bentuk byte
+
+
+# Contoh Tipe Data Angka
+angka_bulat <- 5L
+angka_desimal <- 3.14
+komplek <- 2+3i
+
+#Untuk mengecek tipe data
+class(angka_bulat)
+class(angka_desimal)
+class(komplek)
+
+
+# Contoh Tipe Data Teks
+teks <- "Geoaccess"
+teks 1 <- 'Geoaccess'
+teks2 <- "'Geoaccess'"	
+teks3 <- ""Geoaccess""#salah
+
+Print (teks)
+print (teks1)
+print (teks2)
+print (teks3)
+
+#Untuk mengecek tipe data
+class(teks)
+
+# Contoh Tipe Data Logic
+status <- TRUE
+
+#Untuk mengecek tipe data
+class(status)
+
+# Contoh Tipe Data Raw
+raw <- charToRaw("a")
+
+#Untuk mengecek tipe data
+class(raw)
+
+-----------------------------------------SELESAI-------------------------------------------
