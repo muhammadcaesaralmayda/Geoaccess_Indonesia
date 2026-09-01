@@ -1,0 +1,105 @@
+OPERASI DATA ATRIBUT
+
+# 1. Memilih kolom yang tidak mau ditampilkan (hide)
+adm_no_penduduk <- adm[, !names(adm) %in% "PENDUDUK"]
+adm_no_penduduk
+
+
+# 2. Menambah kolom yang ditampilkan
+kolom_penduduk <- adm[, "PENDUDUK"]
+kolom_penduduk
+
+
+# 3. Mengubah menjadi data frame
+kolom_penduduk_aja <- data.frame(PENDUDUK =adm$PENDUDUK)
+kolom_penduduk_aja
+
+
+
+# 4. Mengecek apa saja isi kolom
+#Kecamatan
+nama_kecamatan <- unique(adm$WADMKC)
+nama_kecamatan
+
+
+
+# 5. Melakukan perhitungan jumlah fitur
+data_kecamatan <- table(adm$WADMKC)
+data_kecamatan
+
+
+
+# 6. Mengubah nama kolom
+names(adm)[names(adm) == "PENDUDUK"] <- "JML_PDDK"
+head (adm)
+names (adm)
+
+
+# 7. Menggabungkan beberapa kolom jadi 1 kolom
+adm$WILAYAH <- paste(
+  adm$WADMKD,
+  adm$WADMKC,
+  adm$WADMKK,
+  sep = ", "
+)
+head(adm)
+
+
+# 8. Memilih kolom dengan value yang sama (Select by atribute)
+Antapani_Kec <- adm[adm$"WADMKC" == "Antapani", ]
+head(Antapani_Kec)
+
+# Kita definisikan ulang data  adm_bdg karena di sub-materi sebelumnya sudah diubah-ubah, jadi kita kembalikan ke kondisi semula.
+
+adm <- st_read("Bandung_DesaAdmin.shp")
+
+
+# 9. Memilih berdasarkan nilai atribut tabel
+Penduduk_100K <- adm[adm$"PENDUDUK" > 100000, ]
+Penduduk_100k
+
+
+# 10. Memilih menggunakan AND dan OR
+kircon_up100k <- adm[adm$"WADMKC" == "Kiaracondong" | adm$"PENDUDUK" == 100000, ]
+kircon_up100k
+
+# 11. Cek apakah ada nilai di data
+daftar_kec <- c("Kiaracondong", "Babakan")
+adm_filtered_kec <- adm[adm$WADMKC %in% daftar_kec, ]
+adm_filtered_kec
+
+
+# 12. Mengelompokkan data
+adm_kecamatan <- aggregate(
+  adm["WADMKC"],
+  by = list(adm$WADMKC),
+  FUN = length
+)
+adm_kecamatan
+
+
+# 13. Transformasi Koordinat
+
+# a. load data
+library(sf)
+pemukiman 	<- st_read("PEMUKIMAN_AR_25K.shp")
+jalan 		<- st_read("Jalan.shp")
+pendidikan	<- st_read("PENDIDIKAN_PT_25K.shp")
+
+
+# b. cek CRS sekarang
+st_crs(pemukiman)
+st_crs(jalan)
+st_crs(pendidikan)
+
+# c. ubah CRS ke WGS84
+pemukiman_UTM <- st_transform(pemukiman, 32748)
+jalan_UTM <- st_transform(jalan, 32748)
+pendidikan_UTM <- st_transform(pendidikan, 32748)
+
+# d. cek hasil
+st_crs(pemukiman_UTM)
+st_crs(jalan_UTM)
+st_crs(pendidikan_UTM)
+
+-----------------------------------------SELESAI-------------------------------------------
