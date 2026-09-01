@@ -1,0 +1,26 @@
+PERHITUNGAN GEOMETRI
+
+# 1. Mencari nilai x dan y
+coords <- st_coordinates(pendidikan_UTM)
+pendidikanX <- coords [, 1]
+pendidikanY <- coords [, 2]
+head(pendidikan_UTM)
+
+# 2. Menghitung panjang line
+
+panjang_jalan <- st_length(jalan_UTM)
+head (panjang_jalan)
+
+# 3. Menghitung luas poligon
+adm_UTM$kolom_luas<- st_area(adm_UTM)
+adm_UTM
+
+
+adm_luas <- aggregate(
+  adm_UTM["kolom_luas"],
+  by = list(adm_UTM$WADMKC),
+  FUN = sum
+)
+adm_luas
+
+-----------------------------------------SELESAI-------------------------------------------
