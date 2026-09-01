@@ -1,0 +1,84 @@
+OPERASI MATEMATIKA
+
+# 1. Operator Matematika
+
+# a. Operator matematika dasar
+
+a <- 10
+b <- 5
+
+penjumlahan <- a + b
+pengurangan <- a - b
+perkalian <- a * b
+pembagian <- a / b
+sisa_bagi <- a %% b # modulus di R pakai %%
+
+
+print(penjumlahan)
+print(pengurangan)
+print(perkalian)
+print(pembagian)
+print(sisa_bagi)
+
+
+cat("Penjumlahan:", penjumlahan, "\n")
+cat("Pengurangan:", pengurangan, "\n")
+cat("Perkalian:", perkalian, "\n")
+cat("Pembagian:", pembagian, "\n")
+cat("Sisa Bagi (modulus):", sisa_bagi, "\n")
+
+
+# b. Perpangkatan
+
+pangkat <- a ^ b # a pangkat b
+akar <- sqrt(a) # akar kuadrat dari a
+cat("10 pangkat 5:", pangkat, "\n")
+cat("Akar kuadrat dari 10:", akar, "\n")
+
+
+# c. Pembulatan
+bilangan_float <- 7.89
+pembulatan <- round(bilangan_float) # pembulatan biasa
+pembulatan_bawah <- floor(bilangan_float) # pembulatan ke bawah
+pembulatan_atas <- ceiling(bilangan_float) # pembulatan ke atas
+
+cat("Pembulatan biasa:", pembulatan, "\n")
+cat("Pembulatan ke bawah:", pembulatan_bawah, "\n")
+cat("Pembulatan ke atas:", pembulatan_atas, "\n")
+
+
+# 2. Operator Perbandingan
+x <- 10
+y <- 5
+
+print(x > y) # TRUE
+print(x == 10) # TRUE
+print(y != 5) # FALSE 
+
+
+# 3. Operator Logika
+x <- TRUE
+y <- FALSE
+print(x & y) # FALSE (AND)
+print(x | y) # TRUE (OR)
+print(!x) # FALSE (NOT)
+
+
+# 4. Operator Miscellaneous/Khusus
+# a. Membuat urutan dari 1 sampai 5
+x <- 1:5
+print(x)
+
+# b. Cek apakah elemen ada di vektor
+angka <- c(2, 4, 6, 8)
+5 %in% angka
+2 %in% angka
+# c. Membuat matrix
+A <- matrix(c(1, 2, 3, 4), nrow = 2)
+B <- matrix(c(5, 6, 7, 8), nrow = 2)
+
+# Perkalian matrix
+C <- A %*% B
+print(C)
+
+-----------------------------------------SELESAI-------------------------------------------
