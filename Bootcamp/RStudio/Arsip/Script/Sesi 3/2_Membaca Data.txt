@@ -1,0 +1,17 @@
+# MEMBACA DATA SPASIAL VEKTOR
+
+#Berkenalan dengan data vektor
+# 1. Load library yang dibutuhkan
+install.packages ("sf")
+library(sf)
+
+
+# 2. Baca shapefile (.shp) dari folder (pastikan file .shp, .dbf, .shx ada)
+adm <- st_read("Bandung_DesaAdmin.shp")
+
+
+# 3. Menulis kembali data shapefile (save as)
+library(sf)
+st_write(adm, "Bandung_Desa_Bandung.shp")
+
+-----------------------------------------SELESAI-------------------------------------------
