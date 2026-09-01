@@ -1,0 +1,27 @@
+MEMBACA DAN DEKLARASI DATA
+
+# 1. Load Data
+getwd()
+setwd("Data Simulasi")
+setwd("Shapefile")
+getwd()
+
+
+# 2. Memastikan paket sf sudah terinstall
+install.packages("sf")
+library(sf)
+
+
+# 3. Declare file yang akan di olah
+list.files()
+adm <- st_read("Bandung_DesaAdmin.shp")
+adm_utm <- st_transform(adm, 32748)
+
+pemukiman <- st_read("PEMUKIMAN_AR_25K.shp")
+pemukiman_utm <- st_transform(pemukiman, st_crs(adm_utm))
+
+jalan <- st_read("Jalan.shp")
+jalan_utm <- st_transform(jalan, st_crs(adm_utm))
+
+st_crs(adm_utm)
+-----------------------------------------SELESAI-------------------------------------------
