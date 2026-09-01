@@ -1,0 +1,39 @@
+PENGENALAN
+
+Untuk memberikan komentar bisa didahului dengan tanda pagar (#).
+Apabila tidak diberikan tanda pagar maka komentar akan dijalankan oleh system dan system akan error.
+
+-------------------------------------------------------------------------------------------
+
+Variabel adalah tempat penyimpanan nilai. R mendukung berbagai tipe data seperti:
+numeric (bilangan), integer (bilangan bulat), character (teks), 
+logical (TRUE/FALSE), vector, list, dan data frame.
+
+------------------------------------------------------------------------------------------
+Hal yang perlu diperhatikan dalam mendeklarasikan variabel, bahwa:
+- Variabel tidak boleh diawali oleh angka;
+- Variabel tidak boleh menggunakan spasi;
+(jika diperlukan, gunakan underscore "_" atau titik ".");
+- Tidak boleh menggunakan simbol tertentu pada nama variabel seperti %, &, #, !, dll; dan
+- Nama variabel harus mudah dipahami.
+
+Cara menyimpan dengan variable digunakan tanda " <- " setelah variable ditulis.
+
+-------------------------------------------------------------------------------------------
+
+#1. Variabel Diawali oleh Angka
+3angka <- c(1, 2, 3) # ----> contoh salah
+print(3angka)
+
+3 angka <- c(1, 2, 3) # ----> contoh salah
+print(3 angka)
+
+-------------------------------------------------------------------------------------------
+#2. Contoh Penulisan variabel yang benar
+tiga_angka <- c(1, 2, 3) # ----> contoh benar
+print(tiga_angka)
+
+tiga.angka <- c(4, 5, 6) # ----> contoh benar
+print(tiga.angka)
+
+-----------------------------------------SELESAI-------------------------------------------
