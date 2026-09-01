@@ -1,0 +1,54 @@
+STRUKTUR DATA
+
+Struktur data adalah tipe data yang dapat menyimpan lebih dari satu item dalam satu variabel.
+R memiliki beberapa struktur data, antara lain:
+Vector : Kumpulan nilai dengan tipe data yang sama
+Matrix : Data dua dimensi
+Array: Data dengan banyak dimensi dengan tipe data yang sama
+List : Kumpulan data dengan tipe berbeda
+Data Frame : Struktur data berbentuk tabel
+Factor : Data kategori
+
+#Contoh Vector
+daftar_angka <- c(1, 2.5, "kucing", 4, 5)
+class(daftar_angka)
+
+
+#Contoh Matrix
+matriks_angka <- matrix(c(1, 2, 3, 4), nrow = 2)
+class(matriks_angka)
+
+
+#Contoh Array
+#Data dari 1 sampai 24
+data_vektor <- 1:24
+
+
+# Membuat array dengan 4 baris, 3 kolom, dan 2 dimensi (matriks)
+multi_array <- array(data_vektor, dim = c(4, 3, 2))
+
+# Mencetak array
+print(multi_array)
+
+
+# Contoh List
+# Membuat list dengan elemen berbeda tipe
+my_list <- list(angka = 10, teks = "Halo", logika = TRUE)
+
+# Menampilkan list
+print(my_list)
+
+
+#Contoh Data Frame
+data_spasial <- data.frame(
+nama = "Titik A",
+latitude = -6.1751,
+longitude = 106.8650)
+class(data_spasial)
+
+
+#Contoh Factor
+kategori <- factor(c("pemukiman", "industri", "pemukiman"))
+class(kategori)
+
+-----------------------------------------SELESAI-------------------------------------------
