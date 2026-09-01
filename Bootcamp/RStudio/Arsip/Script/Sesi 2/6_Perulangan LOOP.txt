@@ -1,0 +1,38 @@
+PERULANGAN / LOOP
+
+Loop adalah fitur penting dalam pemrograman yang memungkinkan kita
+mengeksekusi sebuah blok kode secara berulang selama kondisi tertentu terpenuhi.
+R mendukung beberapa jenis loop, antara lain:
+- for
+- repeat
+- while
+
+#Contoh untuk for
+
+for (i in 1:3) {
+  print(i)
+}
+
+
+#Contoh untuk while
+
+i <- 1
+
+while (i <= 3) {
+  print(i)
+  i <- i + 1
+}
+
+#Contoh untuk repeat-break
+
+i <- 1
+repeat {
+  print(i)
+  i <- i + 1
+
+  if (i > 3) {
+    break
+  }
+}
+
+-----------------------------------------SELESAI-------------------------------------------
