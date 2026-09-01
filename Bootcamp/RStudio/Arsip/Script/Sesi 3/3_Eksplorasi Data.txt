@@ -1,0 +1,31 @@
+EXPLORASI DATA
+
+# 1. Tampilkan ringkasan object sf (nama kolom, jumlah baris, CRS)
+adm
+
+
+# 2. Menampilkan informasi data: baris dan kolom
+dim(adm)
+
+
+# 3. Menampilkan jumlah data: baris
+nrow(adm)
+
+
+# 4. Menampilkan nama-nama kolom
+names(adm)
+
+
+# 5. Lihat struktur tabel atribut: tipe data tiap kolom
+str(adm)
+
+
+# 6. Tampilkan 6 baris pertama tabel (seperti lihat tabel di GIS)
+head(adm)
+
+
+# 7. Tampilkan hanya tabel atribut: tanpa kolom geometry
+attr_table <- st_drop_geometry(adm)
+head(attr_table)
+
+-----------------------------------------SELESAI-------------------------------------------
