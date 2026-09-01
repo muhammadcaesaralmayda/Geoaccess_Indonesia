@@ -1,0 +1,38 @@
+pemukiman <- st_read("PEMUKIMAN_AR_25K.shp")
+titik_pemukiman <- st_centroid(pemukiman_adm)
+titik_pemukiman
+
+# 2. Mengambil koordinat x dan y
+koordinat_mukim <- st_coordinates((titik_pemukiman))
+
+# 3. Membuat tabel x
+x <- koordinat_mukim[,1]
+y <- koordinat_mukim[,2]
+
+x
+y
+
+
+# Panjang
+# 1. Membaca data
+jalan <- st_read("Jalan.shp")
+
+# 2. Ubah ke satuan meter
+jalan_utm <- st_transform(jalan,32748)
+
+# 3. Menghitung panjang
+panjang_jalan <- st_length(jalan_utm)
+
+panjang_jalan
+
+# Luas
+# 1. Membaca data
+kecamatan
+
+# 2. Memastikan sudah dalam proyeksi / satuan meter
+st_crs(kecamatan)
+
+# 3. Menghitung luas
+luas <- st_area(kecamatan)
+
+luas
