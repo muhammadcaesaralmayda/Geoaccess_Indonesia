@@ -1,0 +1,36 @@
+PUSTAKA / PACKAGE
+
+Package (pustaka) di R adalah kumpulan fungsi tambahan yang digunakan untuk membantu kita mengolah data. Secara default, R hanya memiliki fungsi dasar. Untuk pekerjaan tertentu (misalnya data spasial), kita perlu menambahkan package tambahan.
+
+Catatan:
+- library() harus dijalankan setiap kali membuka RStudio
+- Jika package belum diinstall, library() akan error
+ 
+-------------------------------------------------------------------------------------------
+# 1. Cek package yang sudah terinstall
+installed.packages()[, "Package"]
+
+-------------------------------------------------------------------------------------------
+
+# 2. Cara menginstal package
+install.packages("sf") # package untuk data spasial vektor
+install.packages("terra") # package untuk data raster
+install.packages("osmdata") # package data OpenStreetMap
+install.packages("dplyr") # package pengolahan data
+install.packages("tidyr") # package perapihan data
+
+-------------------------------------------------------------------------------------------
+
+# 3. Instal beberapa package sekaligus
+install.packages(c("sf", "terra", "osmdata", "dplyr", "tidyr"))
+
+-------------------------------------------------------------------------------------------
+
+# 4. Cara memanggil package
+library(sf)
+library(terra)
+library(osmdata)
+library(dplyr)
+library(tidyr)
+
+-----------------------------------------SELESAI-------------------------------------------
