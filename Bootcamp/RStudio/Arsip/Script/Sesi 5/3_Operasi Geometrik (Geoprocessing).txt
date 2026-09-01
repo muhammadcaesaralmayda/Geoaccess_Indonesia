@@ -1,0 +1,18 @@
+OPERASI GEOMETRIK
+
+# a. centeroid
+titik_mukim <- st_centroid(pemukiman_utm)
+plot (titik_mukim)
+plot(st_geometry(titik_mukim))
+
+# b. buffer - treshold = dist->distance | satuan meter
+buffer_jalan_500m <- st_buffer(jalan_utm, dist = 5)
+plot(st_geometry(buffer_jalan_500m))
+
+# c.union
+# 3. Union
+bandung_union <- st_union(adm_utm)
+plot(bandung_union, main = "Union Wilayah Bandung")
+
+
+-----------------------------------------SELESAI-------------------------------------------
