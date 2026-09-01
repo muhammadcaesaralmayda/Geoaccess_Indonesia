@@ -1,0 +1,17 @@
+Menghubungkan RStudio dengan folder penyimpanan
+
+#Menghubungkan RStudio dengan folder penyimpanan
+getwd()
+
+#Mengetahui isi folder
+list.files()
+
+#Menyesuaikan lokasi pekerjaan
+setwd("Data Simulasi")
+list.files()
+setwd("Shapefile")
+getwd()
+
+# Mengembalikan lokasi pekerjaan
+setwd(..)
+-----------------------------------------SELESAI-------------------------------------------
