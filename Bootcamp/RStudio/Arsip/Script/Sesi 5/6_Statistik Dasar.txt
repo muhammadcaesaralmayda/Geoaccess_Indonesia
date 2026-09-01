@@ -1,0 +1,70 @@
+# 1. ambil data penduduk dari adm_utm
+penduduk <- adm_utm$PENDUDUK
+
+# 2. Hitung luas
+luas_adm <- st_area(adm_utm)
+
+# 3. gabungkan data penduduk dan kolom luas
+kepadatan <- bind_cols(penduduk, luas_adm)
+
+# 4. kasih nama kolom
+names(kepadatan) <- c("JMLH_PDDK", "LUAS(km^2)")
+
+names(kepadatan)
+
+# 4. Hitung kepadatan
+kepadatan$kepadatanPDDK <- kepadatan$JMLH_PDDK/(kepadatan$`LUAS(km^2)`)
+# harus pakai ` atau backtick
+# Backtick dipakai untuk memanggil nama kolom yang mengandung
+# spasi atau karakter khusus
+
+# 1. konversi luasan menjadi km2 bisa dengan dikali 1,000,000
+kepadatan$kepadatanPDDK_km <- kepadatan$kepadatanPDDK*1000000
+
+# 2. jadikan hasilnya adalah numeric
+kepadatan$kepadatanPDDK_km <- as.numeric(kepadatan$kepadatanPDDK_km)
+
+# 3. kategorikan
+kepadatan$kategori <- ifelse(
+  kepadatan$kepadatanPDDK_km < 10000, "Rendah",
+  ifelse(
+    kepadatan$kepadatanPDDK_km <=50000, "sedang",
+    ifelse(kepadatan$kepadatanPDDK_km<=150000, "Tinggi",
+           "Sangat Tinggi"))
+)
+
+
+# 1. Gabungkan dengan data geom
+geometry <- adm_utm$geometry
+
+kepadatan$geometry <- geometry
+
+# 2. Jadikan dia simple feature
+kepadatan <- st_as_sf(
+  kepadatan,
+  sf_column_name = "geometry",
+  crs = st_crs(adm_utm)
+)
+
+class(kepadatan)
+
+# 2. plot
+plot(
+  kepadatan["kategori"],
+  main = "Kepadatan Penduduk di Kota Bandung"
+)
+
+# summarie
+summary(kepadatan$kepadatanPDDK_km)
+
+# diurutkan untuk tujuan plotting
+kepadatan$kategori <- factor(
+  kepadatan$kategori, 
+  levels = c("Rendah","Sedang","Tinggi", "Sangat Tinggi")
+)
+
+# plot histo
+plot(
+  kepadatan$kategori,
+  xlab = "Kategori kepadatan"
+)
