@@ -1,0 +1,11 @@
+INSTALASI PAKET VEKTOR DAN OSM
+
+# 1. Instal Package
+install.packages("sf")
+library(sf)
+
+# 2. Instalasi osmdata untuk mengambil data dari OSM
+install.packages("osmdata")
+library(osmdata)
+
+-----------------------------------------SELESAI-------------------------------------------
