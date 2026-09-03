@@ -1,0 +1,68 @@
+LOOPING
+
+
+# 1. Instal Package
+library(sf)
+library(osmdata)
+sf::sf_use_s2(FALSE) 
+# Digunakan untuk menonaktifkan mesin geometri S2 agar operasi spasial
+# dilakukan secara planar dan meminimalisir error pada analisis skala lokal
+
+
+# 2. Daftar Lokasi
+cities <- c(
+  "Medan, Indonesia",
+  "Bukittinggi, Indonesia",
+  "Banjarmasin, Indonesia",
+  "Palu, Indonesia"
+)
+
+
+# 3. Mengatur canvas menjadi beberapa bagian
+par(
+  mfrow = c(length(cities), 1),
+  mar = c(1, 1, 2, 1)
+)
+
+
+# 4. Proses Looping
+for (city in cities) {
+  
+  cat("Memproses:", city, "\n")
+  
+  tryCatch({
+    
+    # a. Bounding box
+    bbox <- getbb(city)
+    
+    # b. Ambil data jalan OSM
+    jalan <- opq(bbox, timeout = 600) |>
+      add_osm_feature(key = "highway") |>
+      osmdata_sf(quiet = TRUE)
+    
+    # c. Ambil data garis jalan
+    jalan_line <- jalan$osm_lines
+    
+    # d. Cek apakah data ada
+    if (is.null(jalan_line) || nrow(jalan_line) == 0) {
+      stop("Data jalan kosong")
+    }
+    
+    # e. Plot
+    plot(
+      st_geometry(jalan_line),
+      col = "grey40",
+      lwd = 0.3,
+      main = paste("Jaringan Jalan di", city)
+    )
+    
+  }, error = function(e) {
+    
+    plot.new()
+    title(main = paste("Gagal memuat:", city))
+    text(0.5, 0.5, "Data OSM tidak tersedia / Overpass timeout", cex = 1)
+    
+    message("WARNING gagal:", city)
+  })
+}
+-----------------------------------------SELESAI-------------------------------------------
