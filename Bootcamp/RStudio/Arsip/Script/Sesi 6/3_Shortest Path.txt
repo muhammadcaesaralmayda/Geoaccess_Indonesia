@@ -1,0 +1,155 @@
+# 1. Packages yang digunakan
+library(osmdata)
+
+# 2.Mengambil Jalan dari OSM
+# a. Menentukan Area of Interest
+bbox <- getbb("Jakarta Pusat, Indonesia")
+
+# b. Query data jaringan jalan
+jalan_osm <- opq(bbox, timeout = 300) |>
+  add_osm_feature(key = "highway") |>
+  osmdata_sf()
+
+# c. Mengambil data garis jalan dan menyamakan CRS
+jalan_line <- jalan_osm$osm_lines |>
+  st_make_valid() |>
+  st_cast("LINESTRING") |>
+  st_transform(32748)   # UTM Zona 48S (meter)
+
+# c. Mengambil data garis jalan dan menyamakan CRS
+jalan_line <- jalan_line |>
+  st_make_valid() |>
+  st_cast("LINESTRING") |>
+  st_transform(32748)   # UTM Zona 48S (meter)
+
+# 3. Memasukan nilai koordinat awal dan tujuan
+poi <- st_sf(
+  name = c("RSUD Tanah Abang", "USAHID"),
+  type = c("hospital", "school"),
+  geometry = st_sfc(
+    st_point(c(106.81445, -6.19106)),  # RSUD Tanah Abang
+    st_point(c(106.81962, -6.20991))   # USAHID
+  ),
+  crs = 4326
+) |>
+  st_transform(32748)
+
+library(sfnetworks)
+# 4. Membuat Network dan Menentukan panjang edge
+net <- as_sfnetwork(jalan_line, directed = FALSE)
+
+# 5. Menambahkan informasi panjang pada setiap ruas jalan
+net <- net |>
+  activate("edges") |>
+  mutate(edge_length = st_length(geometry))
+
+# 6. Memilih komponen terbesar (jalan yang terhubung)
+
+library(tidygraph)
+# Menghitung komponen keterhubungan jaringan jalan. 
+# Setiap node diberi ID komponen berdasarkan konektivitasnya
+
+net <- net |>
+  activate("nodes") |>
+  mutate(component = group_components())
+
+# Menentukan komponen dengan jumlah node terbanyak
+# (diasumsikan sebagai jaringan jalan utama)
+
+largest_comp <- which.max(
+  table(net |> activate("nodes") |> pull(component))
+)
+
+# Menyaring network agar hanya menyisakan komponen terbesar
+# Tujuannya menghindari jaringan terputus saat analisis rute
+
+net <- net |>
+  activate("nodes") |>
+  filter(component == largest_comp)
+
+# Mengambil node dari network sebagai objek sf
+# Digunakan untuk pencarian node terdekat (nearest feature)
+
+nodes <- net |>
+  activate("nodes") |>
+  st_as_sf()
+
+# 6. Menentukan rute terpendek
+# a. Menentukan node terdekat dari titik awal dan tujuan
+from <- st_nearest_feature(
+  poi[poi$type == "school", ],
+  nodes
+)
+
+to <- st_nearest_feature(
+  poi[poi$type == "hospital", ],
+  nodes
+)
+
+# b. Menghitung rute terpendek
+sp <- st_network_paths(
+  net,
+  from = from,
+  to = to,
+  weights = "edge_length"
+)
+
+# c. Mengambil edge rute terpendek
+route <- net |>
+  activate("edges") |>
+  slice(unlist(sp$edge_paths)) |>
+  st_as_sf()
+
+
+# 7. Plot hasil
+# kasih ruang di bawah plot
+par(mar = c(6, 4, 4, 2))
+
+# plot jaringan jalan
+plot(
+  st_geometry(jalan_line),
+  col = "grey80",
+  lwd = 1,
+  main = "Rute Terpendek Sekolah – Rumah Sakit"
+)
+
+# plot rute terpendek
+plot(
+  st_geometry(route),
+  col = "red",
+  lwd = 4,
+  add = TRUE
+)
+
+# plot sekolah
+plot(
+  st_geometry(poi[poi$type == "school", ]),
+  col = "blue",
+  pch = 19,
+  cex = 1.5,
+  add = TRUE
+)
+
+# plot rumah sakit
+plot(
+  st_geometry(poi[poi$type == "hospital", ]),
+  col = "darkgreen",
+  pch = 19,
+  cex = 1.5,
+  add = TRUE
+)
+
+# legend di LUAR area peta
+par(xpd = TRUE)
+legend(
+  "bottom",
+  inset = -0.25,
+  legend = c("Jaringan Jalan", "Rute Terpendek", "Sekolah", "Rumah Sakit"),
+  col = c("grey80", "red", "blue", "darkgreen"),
+  lwd = c(1, 4, NA, NA),
+  pch = c(NA, NA, 19, 19),
+  horiz = TRUE,
+  bty = "n",
+  cex = 0.9
+)
+par(xpd = FALSE)
