@@ -1,0 +1,113 @@
+OTOMATISASI
+
+# 1. Deklarasi fungsi
+nearest_route_r <- function(
+    city_name,
+    start_coords,   # c(lon, lat)
+    end_coords      # c(lon, lat)
+) {
+  
+
+# a. Ambil jalan OSM
+  bbox <- getbb(city_name)
+  
+  jalan <- opq(bbox, timeout = 300) |>
+    add_osm_feature(key = "highway") |>
+    osmdata_sf()
+  
+  jalan_line <- jalan$osm_lines |>
+    st_make_valid() |>
+    st_cast("LINESTRING") |>
+    st_transform(32748)
+  
+# b. Menentukan POI (awal & tujuan)
+  poi <- st_sf(
+    type = c("start", "destination"),
+    geometry = st_sfc(
+      st_point(start_coords),
+      st_point(end_coords)
+    ),
+    crs = 4326
+  ) |>
+    st_transform(32748)
+  
+
+# c. Network + panjang edge
+
+  net <- as_sfnetwork(jalan_line, directed = FALSE) |>
+    activate("edges") |>
+    mutate(edge_length = st_length(geometry))
+  
+# d. Ambil komponen terbesar
+  net <- net |>
+    activate("nodes") |>
+    mutate(component = group_components())
+  
+  largest_comp <- which.max(
+    table(net |> activate("nodes") |> pull(component))
+  )
+  
+  net <- net |>
+    activate("nodes") |>
+    filter(component == largest_comp)
+  
+  nodes <- net |> activate("nodes") |> st_as_sf()
+
+  # e. Node terdekat
+
+  from <- st_nearest_feature(poi[poi$type == "start", ], nodes)
+  to   <- st_nearest_feature(poi[poi$type == "destination", ], nodes)
+  
+
+# f. Shortest path
+
+  sp <- st_network_paths(
+    net,
+    from = from,
+    to = to,
+    weights = "edge_length"
+  )
+  
+  route <- net |>
+    activate("edges") |>
+    slice(unlist(sp$edge_paths)) |>
+    st_as_sf()
+  
+# g. Plot
+  plot(st_geometry(jalan_line),
+       col = "grey80",
+       lwd = 1,
+       main = paste("Rute Terpendek -", city_name))
+  
+  plot(st_geometry(route),
+       col = "red",
+       lwd = 4,
+       add = TRUE)
+  
+  plot(st_geometry(poi),
+       col = c("blue", "darkgreen"),
+       pch = 19,
+       cex = 1.5,
+       add = TRUE)
+  
+  return(route)
+}
+
+
+# 2. Memasukkan Nilai kooridnat untuk dicari rute terpendek
+# a. contoh 1
+rute_tanah_abang <- nearest_route_r(
+  city_name   = "Jakarta Pusat, Indonesia",
+  start_coords = c(106.81162,-6.18732),   # rumah
+  end_coords   = c(106.82347, -6.20213)    # BNI City
+)
+# b. contoh 2
+rute_uny <- nearest_route_r(
+  city_name   = "Depok, Sleman Regency, Indonesia",
+  start_coords = c(110.41204, -7.76203),
+  end_coords   = c(110.3871, -7.7706)
+)
+
+#mencari nilai koordinat: https://nominatim.openstreetmap.org/ui/search.html
+
+-----------------------------------------SELESAI-------------------------------------------
