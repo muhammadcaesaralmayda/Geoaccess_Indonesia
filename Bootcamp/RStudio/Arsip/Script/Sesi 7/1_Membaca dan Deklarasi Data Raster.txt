@@ -1,0 +1,28 @@
+MEMBACA DAN DEKLARASI DATA RASTER
+
+# 1. Menentukan Lokasi Pekerjaan
+getwd()
+setwd("Data Simulasi")
+setwd("Raster")
+
+-------------------------------------------------------------------------------------------
+
+# 2. Instal Package
+install.packages("terra")
+library(terra)
+
+-------------------------------------------------------------------------------------------
+
+# 3. Membaca dan menulis data raster
+L8 <- rast("L8_2020_YOGYAKARTA.tif")
+
+-------------------------------------------------------------------------------------------
+
+# 4. Menulis data raster (save as)
+writeRaster(
+  L8,
+  "L8_2020_YOGYAKARTA_copy.tif",
+  overwrite = TRUE
+)
+
+-----------------------------------------SELESAI-------------------------------------------
