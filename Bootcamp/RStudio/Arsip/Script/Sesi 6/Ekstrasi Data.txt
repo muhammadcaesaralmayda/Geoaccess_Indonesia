@@ -1,0 +1,82 @@
+EKSTRAKSI DATA OSM
+
+
+library(osmdata)
+library(sf)
+
+# 1. TITIK (Lampu Lalu lintas)
+
+# a. Menentukan Area of Interest (ambil data lokasi / bounding box)
+bb_lampu <- getbb("Jakarta Pusat, Indonesia")
+
+# b. Mendefinisikan data yang akan diambil (query data lampu lalu lintas dari OSM)
+q_lampu <- opq(bb_lampu) |>
+  add_osm_feature(key = "highway", value = "traffic_signals")
+
+# c. Mengunduh data dari OpenStreetMap (download dan konversi ke format sf)
+osm_lampu <- osmdata_sf(q_lampu)
+
+# d. Memilih objek titik (point - lampu lalu lintas direpresentasikan sebagai titik)
+lampu_point <- osm_lampu$osm_points
+
+# e. Visualisasi data (plot lampu lalu lintas)
+plot(
+  st_geometry(lampu_point),
+  col = "lightgreen",
+  pch = 19,
+  cex = 0.8,
+  main = "Lampu Lalu Lintas di Jakarta Pusat (OSM)"
+)
+
+
+
+
+# 2. JALAN
+
+# a. Menentukan Area of Interest (ambil data lokasi / bounding box)
+bb_jalan <- getbb("Jakarta Pusat, Indonesia")
+
+# b. Mendefinisikan data yang akan diambil (query jaringan jalan dari OSM)
+q_jalan <- opq(bb_jalan) |>
+  add_osm_feature(key = "highway")
+
+# c. Mengunduh data dari OpenStreetMap (download dan konversi ke format sf)
+osm_jalan <- osmdata_sf(q_jalan)
+
+# d. Memilih objek garis (line - jalan direpresentasikan sebagai garis)
+jalan_line <- osm_jalan$osm_lines
+
+# e. Visualisasi data (plot jaringan jalan)
+plot(
+  st_geometry(jalan_line),
+  col = "lightblue",
+  lwd = 0.3,
+  main = "Jaringan Jalan di Jakarta Pusat (OSM)"
+)
+
+
+
+# 3. BANGUNAN
+
+# a. Menentukan Area of Interest (ambil data lokasi / bounding box)
+bb_bangunan <- getbb("Tanah Abang, Jakarta Pusat, Indonesia")
+
+# b. Mendefinisikan data yang akan diambil (query data bangunan dari OSM)
+q_bangunan <- opq(bb_bangunan) |>
+  add_osm_feature(key = "building")
+
+# c. Mengunduh data dari OpenStreetMap (download dan konversi ke format sf)
+osm_bangunan <- osmdata_sf(q_bangunan)
+
+# d. Memilih objek poligon (bangunan direpresentasikan sebagai area)
+bangunan_poli <- osm_bangunan$osm_polygons
+
+# e. Visualisasi data (plot bangunan)
+plot(
+  st_geometry(bangunan_poli),
+  col = "yellow",
+  border = "darkgreen",
+  main = "Bangunan di Jakarta Pusat (OSM)"
+)
+
+-----------------------------------------SELESAI-------------------------------------------
