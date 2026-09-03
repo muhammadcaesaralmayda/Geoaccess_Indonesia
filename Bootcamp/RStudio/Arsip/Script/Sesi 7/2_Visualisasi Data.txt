@@ -1,0 +1,46 @@
+VISUALISASI DATA RASTER
+
+# 1. Single Band
+# a. Plot sederhana
+plot(L8[[1]], main = "Band 1 - Landsat 8")
+
+# b. Mengganti warna
+plot(
+  L8[[1]],
+  col = terrain.colors(100),#buat bikin gradasi, ada 20, 50, 100, 200
+  main = "Band 1"
+)
+
+# c. plot menjadi 3 bagian
+par(mfrow = c(3, 1))   # 3 baris, 1 kolom
+
+plot(L8[[1]], main = "Band 1")
+plot(L8[[2]], main = "Band 2")
+plot(L8[[3]], main = "Band 3")
+
+-------------------------------------------------------------------------------------------
+
+par(mfrow= c(1,1))
+
+-------------------------------------------------------------------------------------------
+
+# 2. Plot Multiband
+# a. Plot Sederhana
+plotRGB(L8, r = 4, g = 3, b = 2)
+
+# b. Plot dengan pengaturan kontras
+plotRGB(
+  L8,
+  r = 4, g = 3, b = 2,
+  stretch = "lin" #kontrasnya
+)
+
+# False color
+plotRGB(
+  L8,
+  r = 5, g = 4, b = 3,
+  stretch = "lin",
+  main = "False Color Composite (5-4-3)"
+)
+
+-----------------------------------------SELESAI-------------------------------------------
