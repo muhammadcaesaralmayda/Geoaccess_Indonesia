@@ -1,0 +1,25 @@
+# 1. MEMANGGIL PACKAGE
+
+library(sf)
+library(dplyr)
+library(ggplot2)
+
+
+# 2. MENENTUKAN WORKING DIRECTORY
+
+# menggunakan folder Landcover
+getwd()
+
+
+# 3. MEMBACA DATA SPASIAL
+# Membaca batas administrasi DIY
+adm_diy <- st_read("DIY_DesaAdmin.shp")
+
+# Membaca data tutupan lahan tahun 2017
+tl_2017 <- st_read("PL_DIY_2017.shp")
+
+# Membaca data tutupan lahan tahun 2025
+tl_2025 <- st_read("PL_DIY_2025.shp")
+
+
+-----------------------------------------SELESAI-------------------------------------------
