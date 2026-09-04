@@ -1,0 +1,20 @@
+# 20. VISUALISASI PERUBAHAN LUAS TUTUPAN LAHAN
+ggplot(
+  tl_bantul_change,
+  aes(
+    x = Kelas,
+    y = Perubahan_Luas
+  )
+) +
+  
+  geom_col() +
+  
+  labs(
+    title = "Perubahan Luas Tutupan Lahan Kabupaten Bantul",
+    x = "Kelas Tutupan Lahan",
+    y = "Perubahan Luas (Ha)"
+  ) +
+  
+  theme_minimal()
+
+-----------------------------------------SELESAI-------------------------------------------
