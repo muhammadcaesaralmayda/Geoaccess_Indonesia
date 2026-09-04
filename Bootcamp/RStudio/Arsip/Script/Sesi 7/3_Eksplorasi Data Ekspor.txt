@@ -1,0 +1,48 @@
+#Eksplorasi Data Raster
+Eksplorasi data raster merupakan tahap awal untuk memahami karakteristik data tanpa mengubah
+nilai piksel. Tahap ini bertujuan untuk mengetahui kondisi awal raster sebelum dilakukan
+pengolahan lebih lanjut.
+
+# 1. Mengecheck Data
+ L8
+
+-------------------------------------------------------------------------------------------
+
+# 2. Mengecek CRS
+crs(L8)
+
+-------------------------------------------------------------------------------------------
+
+# 3. Melihat min max DN dari salah satu band
+# Tujuan
+# a. Menghitung nilai minimum dan maksimum dari seluruh piksel pada band 4 (Red) Landsat.
+# b. Memahami karakteristik data sebelum dilakukan operasi lanjutan (normalisasi, indeks, klasifikasi).
+# c.Validasi data → ngecek apakah nilainya masih masuk akal atau ada nilai ekstrem / error
+
+
+global(L8[[4]], fun = c("min", "max"), na.rm = TRUE)
+
+-----------------------------------------SELESAI-------------------------------------------
+
+
+# Jika terdapat nilai ekstrem yang TIDAK masuk akal secara fisik
+# (misal reflektansi negatif atau nilai error sensor)
+# contoh di band red
+
+red <- L8[[4]]
+
+red[red < 0] <- NA
+red[red > threshold_fisik] <- NA
+
+# ------------------------------------------------
+
+# Jika nilai masih masuk akal tetapi terlalu ekstrem (outlier)
+
+# 1. Cek distribusi nilai
+q <- global(red, quantile, probs = c(0.01, 0.99), na.rm = TRUE)
+q01 <- q[1, 1]
+q99 <- q[2, 1]
+
+# 2. Lakukan clipping
+red[red < q01] <- q01
+red[red > q99] <- q99
