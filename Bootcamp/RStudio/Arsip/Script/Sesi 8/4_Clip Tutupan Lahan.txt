@@ -1,0 +1,16 @@
+# 8. CLIP TUTUPAN LAHAN BERDASARKAN BANTUL
+
+tl_bantul_2017 <- st_intersection(
+  tl_2017,
+  bantul
+)
+
+tl_bantul_2025 <- st_intersection(
+  tl_2025,
+  bantul
+)
+# isi warning: Saya memotong geometry-nya, 
+# dan saya menganggap nilai atributnya tetap berlaku pada hasil potongannya.
+
+
+-----------------------------------------SELESAI-------------------------------------------
