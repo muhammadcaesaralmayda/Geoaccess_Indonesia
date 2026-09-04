@@ -1,0 +1,14 @@
+# 7. EKSPLORASI DATA TUTUPAN LAHAN
+# Cek nama kolom
+names(tl_2017)
+
+names(tl_2025)
+
+# Cek kelas tutupan lahan
+unique(tl_2017$PL)
+
+unique(tl_2025$PL)
+
+
+
+-----------------------------------------SELESAI-------------------------------------------
