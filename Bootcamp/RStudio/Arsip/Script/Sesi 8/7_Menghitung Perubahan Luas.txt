@@ -1,0 +1,44 @@
+# 17. MENYAMAKAN NAMA KOLOM UNTUK JOIN
+tl_bantul_2017_total <- tl_bantul_2017_total %>%
+  
+  rename(
+    Kelas = PL_2017
+  )
+
+
+tl_bantul_2025_total <- tl_bantul_2025_total %>%
+  
+  rename(
+    Kelas = PL_2025
+  )
+
+
+
+# 18. MENGGABUNGKAN DATA TAHUN 2017 DAN 2025
+tl_bantul_change <- tl_bantul_2017_total %>%
+  
+  left_join(
+    tl_bantul_2025_total,
+    by = "Kelas"
+  )
+
+
+# Lihat hasil
+tl_bantul_change
+
+
+
+# 19. MENGHITUNG PERUBAHAN LUAS
+tl_bantul_change <- tl_bantul_change %>%
+  
+  mutate(
+    Perubahan_Luas =
+      Luas_2025 -
+      Luas_2017
+  )
+
+
+# Lihat hasil akhir perubahan
+tl_bantul_change
+
+-----------------------------------------SELESAI-------------------------------------------
