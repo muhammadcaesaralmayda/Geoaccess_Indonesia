@@ -1,0 +1,53 @@
+# 9. MEMBUAT PALET WARNA TUTUPAN LAHAN
+class_color_mapping <- c(
+  "Vegetasi" = "#05450a",
+  "Semak belukar" = "#b6ff05",
+  "Lahan terbangun" = "#a5a5a5",
+  "Pertanian" = "#ff6d4c",
+  "Tubuh air" = "#1c0dff"
+)
+
+
+# 10. VISUALISASI TUTUPAN LAHAN TAHUN 2017
+ggplot(tl_bantul_2017) +
+  
+  geom_sf(
+    aes(fill = PL),
+    color = "white",
+    linewidth = 0.1
+  ) +
+  
+  scale_fill_manual(
+    values = class_color_mapping
+  ) +
+  
+  labs(
+    title = "Tutupan Lahan Kabupaten Bantul Tahun 2017",
+    fill = "Tutupan Lahan"
+  ) +
+  
+  theme_minimal()
+
+
+
+# 11. VISUALISASI TUTUPAN LAHAN TAHUN 2025
+ggplot(tl_bantul_2025) +
+  
+  geom_sf(
+    aes(fill = PL),
+    color = "white",
+    linewidth = 0.1
+  ) +
+  
+  scale_fill_manual(
+    values = class_color_mapping
+  ) +
+  
+  labs(
+    title = "Tutupan Lahan Kabupaten Bantul Tahun 2025",
+    fill = "Tutupan Lahan"
+  ) +
+  
+  theme_minimal()
+
+-----------------------------------------SELESAI-------------------------------------------
