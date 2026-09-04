@@ -1,0 +1,40 @@
+# 21. MEMILIH AREA YANG BERHUBUNGAN DENGAN VEGETASI
+vegetasi <- tl_bantul_intersect %>%
+  
+  filter(
+    PL_2017 == "Vegetasi" |
+      PL_2025 == "Vegetasi"
+  )
+
+
+
+# 22. MENGKLASIFIKASIKAN PERUBAHAN VEGETASI
+vegetasi <- vegetasi %>%
+  
+  mutate(
+    
+    Perubahan_Vegetasi = case_when(
+      
+      PL_2017 == "Vegetasi" &
+        PL_2025 == "Vegetasi"
+      ~ "Vegetasi Tidak Berubah",
+      
+      
+      PL_2017 == "Vegetasi" &
+        PL_2025 != "Vegetasi"
+      ~ "Vegetasi Berkurang",
+      
+      
+      PL_2017 != "Vegetasi" &
+        PL_2025 == "Vegetasi"
+      ~ "Vegetasi Bertambah"
+      
+    )
+    
+  )
+
+
+# Cek hasil
+head(vegetasi)
+
+-----------------------------------------SELESAI-------------------------------------------
