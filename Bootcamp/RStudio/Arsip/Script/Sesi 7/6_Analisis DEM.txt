@@ -1,0 +1,37 @@
+ANALISA DEM
+
+# 1. Deklarasikan data
+dem <- rast("SRTM_YOGYAKARTA.tif")
+dem
+
+-------------------------------------------------------------------------------------------
+
+# 2. check minimal dan maximal elevasi
+global(dem, c("min", "max"), na.rm = TRUE)
+
+-------------------------------------------------------------------------------------------
+
+# 3. Lakukan analisa terrain untuk mendapatkan slope
+slope <- terrain(dem, v = "slope", unit = "degrees")
+slope
+
+-------------------------------------------------------------------------------------------
+
+# 4. Menulis Raster (save as)
+writeRaster(
+  slope,
+  "Slope_Jogja.tif",
+  overwrite = TRUE
+)
+
+-------------------------------------------------------------------------------------------
+
+# 5. Check hasil 
+slope2 <- rast("Slope_Jogja.tif")
+plot(
+  slope2,
+  col = gray.colors(100),
+  main = "Kemiringan Lereng (derajat)"
+)
+
+-----------------------------------------SELESAI-------------------------------------------
