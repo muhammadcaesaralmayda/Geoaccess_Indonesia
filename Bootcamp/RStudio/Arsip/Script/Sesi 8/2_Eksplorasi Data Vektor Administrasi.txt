@@ -1,0 +1,44 @@
+# 4. MENYAMAKAN SISTEM KOORDINAT
+# Ubah CRS menjadi WGS 84 / UTM Zone 49S
+adm_diy <- st_transform(adm_diy, 32749)
+
+tl_2017 <- st_transform(tl_2017, 32749)
+
+tl_2025 <- st_transform(tl_2025, 32749)
+
+# Cek CRS
+st_crs(adm_diy)
+
+st_crs(tl_2017)
+
+st_crs(tl_2025)
+
+
+
+# 5. EKSPLORASI DATA ADMINISTRASI
+# Melihat nama kolom
+names(adm_diy)
+
+# Melihat daftar kabupaten
+unique(adm_diy$WADMKK)
+
+
+
+
+# 6. FILTER AoI
+
+bantul <- adm_diy %>%
+  filter(WADMKK == "Bantul")
+
+bantul <- adm_diy[
+  adm_diy$WADMKK == "Bantul",
+]
+
+
+# Plot batas Bantul
+plot(
+  st_geometry(bantul),
+  main = "Batas Administrasi Kabupaten Bantul"
+)
+
+-----------------------------------------SELESAI-------------------------------------------
