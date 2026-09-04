@@ -1,0 +1,35 @@
+# 23. MENGHITUNG TOTAL LUAS PERUBAHAN VEGETASI
+perubahan_luas_vegetasi <- vegetasi %>%
+  
+  st_drop_geometry() %>%
+  
+  group_by(Perubahan_Vegetasi) %>%
+  
+  summarise(
+    Luas_Ha = sum(Luas_Ha),
+    .groups = "drop"
+  )
+
+
+# Lihat hasil
+perubahan_luas_vegetasi
+
+
+
+# 24. VISUALISASI PERUBAHAN VEGETASI
+ggplot(vegetasi) +
+  
+  geom_sf(
+    aes(fill = Perubahan_Vegetasi),
+    color = "white",
+    linewidth = 0.1
+  ) +
+  
+  labs(
+    title = "Dinamika Tutupan Vegetasi Kabupaten Bantul 2017–2025",
+    fill = "Perubahan Vegetasi"
+  ) +
+  
+  theme_minimal()
+
+-----------------------------------------SELESAI-------------------------------------------
