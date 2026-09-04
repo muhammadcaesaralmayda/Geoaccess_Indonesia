@@ -1,0 +1,87 @@
+ZONAL STATISTIK
+
+library(terra)
+
+# 1. Baca data
+ndvi  <- rast("NDVI_YOGYAKARTA.tif")
+zones <- vect("Batas_Adm_Yogyakarta.shp")
+
+-------------------------------------------------------------------------------------------
+
+# 2. Zonal statistics NDVI
+zonal_ndvi <- extract(
+  ndvi,
+  zones,
+  fun = mean,
+  na.rm = TRUE
+)
+
+head(zonal_ndvi)
+
+-------------------------------------------------------------------------------------------
+
+# 3. Salin data zona
+zones_ndvi <- zones
+
+-------------------------------------------------------------------------------------------
+
+# 4. Tambahkan nilai NDVI (terra way)
+values(zones_ndvi)$ndvi_mean <- zonal_ndvi$SR_B5
+
+-------------------------------------------------------------------------------------------
+
+library (sf)
+# 5. Konversi ke sf untuk visualisasi
+zones_ndvi_sf <- st_as_sf(zones_ndvi)
+
+names(zones_ndvi_sf)
+class(zones_ndvi_sf)
+
+-------------------------------------------------------------------------------------------
+
+# 6. Plot 
+# ambil NDVI
+ndvi_vals <- zones_ndvi_sf$ndvi_mean
+
+# buat palet warna 100 warna
+pal <- rev(terrain.colors(100))
+
+# konversi nilai NDVI ke indeks warna
+# skala NDVI ke 1-100
+ndvi_col_idx <- round( (ndvi_vals - min(ndvi_vals, na.rm=TRUE)) /
+                       (max(ndvi_vals, na.rm=TRUE) - min(ndvi_vals, na.rm=TRUE)) * 99 ) + 1
+
+# plot
+plot(zones_ndvi_sf["ndvi_mean"],
+     col = pal[ndvi_col_idx],
+     border = "grey",
+     main = "Rata-rata NDVI per Kecamatan Kota Yogyakarta")
+
+# tambahkan legend manual
+legend_vals <- seq(min(ndvi_vals, na.rm=TRUE), max(ndvi_vals, na.rm=TRUE), length.out = 5)
+legend_colors <- pal[round((legend_vals - min(ndvi_vals)) / (max(ndvi_vals) - min(ndvi_vals)) * 99) + 1]
+
+legend("topright",
+       legend = round(legend_vals, 2),
+       fill = legend_colors,
+       title = "NDVI")
+
+
+# 7. visualisasi dengan ggplot
+library (ggplot2)
+ggplot(zones_ndvi_sf) +
+  geom_sf(aes(fill = ndvi_mean), color = "grey") +
+  scale_fill_gradientn(
+    colours = rev(terrain.colors(100)),
+    name = "NDVI"
+  ) +
+  labs(
+    title = "Rata-rata NDVI per Kecamatan\nKota Yogyakarta"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    panel.grid.minor = element_blank(),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+-----------------------------------------SELESAI-------------------------------------------
