@@ -1,0 +1,41 @@
+Praproses raster dilakukan untuk meningkatkan kualitas visualisasi serta memastikan data
+siap dan konsisten digunakan dalam analisis spasial dan pemodelan lanjutan.
+
+
+# 1. Normalisasi Raster
+# Normalisasi dilakukan untuk menyeragamkan skala nilai data raster agar
+# analisis gabungan dan pemodelan berjalan lebih stabil dan adil antar variabel.
+# Pada contoh ini normalisasi dilakukan sebelum cropping untuk penyederhanaan alur.
+# Pada praktik analisis lanjutan, normalisasi sebaiknya dilakukan setelah area studi ditentukan.
+
+red <- L8[[4]] 
+mm <- global(red, fun = c("min", "max"), na.rm = TRUE)
+red_norm <- (red - mm$min) / (mm$max - mm$min)
+minmax(red_norm) 
+
+-------------------------------------------------------------------------------------------
+
+# 2. Menyamakan system referensi koordinat
+
+# a. Baca data
+L8  <- rast("L8_2020_YOGYAKARTA.tif")
+adm <- vect("Batas_Adm_Yogyakarta.shp")
+
+# b. Cek CRS masing-masing
+crs(L8)
+crs(adm)
+
+# c. Samakan CRS (vektor mengikuti raster)
+adm_crs <- project(adm, crs(L8))
+
+-------------------------------------------------------------------------------------------
+
+# 3. Crop + mask (zoom dulu, lalu dirapikan)
+L8_crop <- crop(L8, adm_crs) #zoom ke arah xy max dan min
+L8_mask <- mask(L8_crop, adm_crs)
+
+-------------------------------------------------------------------------------------------
+
+# 4. Plot peta
+plot (L8_mask,1)
+-----------------------------------------SELESAI-------------------------------------------
