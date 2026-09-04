@@ -1,0 +1,88 @@
+# 12. Intersection
+tl_bantul_intersect <- st_intersection(
+  tl_bantul_2017,
+  tl_bantul_2025
+)
+
+
+# Cek nama kolom hasil intersect
+names(tl_bantul_intersect)
+
+
+
+# 13. MERAPIKAN NAMA KOLOM
+# Jika hasil intersect menghasilkan PL.x dan PL.y
+
+tl_bantul_intersect <- tl_bantul_intersect %>%
+  
+  rename(
+    PL_2017 = PL,
+    PL_2025 = PL.1
+  )
+
+
+# 14. Menghitung Luas Hasil Intersection
+tl_bantul_intersect <- tl_bantul_intersect %>%
+  
+  mutate(
+    Luas_Ha = as.numeric(
+      st_area(geometry)
+    ) / 10000
+  )
+
+
+# Cek hasil
+head(tl_bantul_intersect)
+
+
+
+# 15. MENGHITUNG TOTAL LUAS TUTUPAN LAHAN TAHUN 2017
+tl_bantul_2017_total <- tl_bantul_intersect %>%
+  
+  st_drop_geometry() %>%
+  
+  group_by(PL_2017) %>%
+  
+  summarise(
+    Luas_2017 = sum(Luas_Ha),
+    .groups = "drop"
+  ) %>%
+  
+  mutate(
+    Persen_2017 =
+      Luas_2017 /
+      sum(Luas_2017) *
+      100
+  )
+
+
+# Lihat hasil
+tl_bantul_2017_total
+
+
+
+# 16. MENGHITUNG TOTAL LUAS TUTUPAN LAHAN TAHUN 2025
+tl_bantul_2025_total <- tl_bantul_intersect %>%
+  
+  st_drop_geometry() %>%
+  
+  group_by(PL_2025) %>%
+  
+  summarise(
+    Luas_2025 = sum(Luas_Ha),
+    .groups = "drop"
+  ) %>%
+  
+  mutate(
+    Persen_2025 =
+      Luas_2025 /
+      sum(Luas_2025) *
+      100
+  )
+
+
+# Lihat hasil
+tl_bantul_2025_total
+
+
+-----------------------------------------SELESAI-------------------------------------------
