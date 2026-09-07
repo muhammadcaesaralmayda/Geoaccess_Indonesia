@@ -1,0 +1,56 @@
+//******************** Rainfall Estimation ********************
+
+// Koleksi Dataset
+var dataset = ee.ImageCollection('UCSB-CHG/CHIRPS/DAILY')
+
+  // Filter Tanggal Dataset
+  .filterDate('2022-01-01', '2023-01-01')
+  
+  // Memilih Band Dataset Daily
+  .select('precipitation');
+  
+// Print Dataset
+print(dataset);
+
+//******************** Menghitung Rata-Rata Tahunan ********************
+
+// Fungsi untuk Rata-rata Tahunan
+var hitungTahunan = function(tahun) {
+  
+  // Konversi Tahun menjadi GEE Number
+  tahun = ee.Number(tahun);
+  
+  // Filter Dataset Berdasarkan Tahun
+  var gambarTahunan = dataset
+    .filterDate(ee.Date.fromYMD(tahun, 1, 1), ee.Date.fromYMD(tahun.add(1), 1, 1))
+    
+    // Menghitung Rata-Rata dari Citra yang terfilter
+    .mean();
+    
+  // Menambahkan Informasi Tahun ke Citra
+  return gambarTahunan.set('tahun', tahun);
+};
+  
+// Membuat Daftar Tahun (Pastikan Tahun Sesuai)
+var tahun = ee.List.sequence(2000, 2024);
+
+// Membuat Koleksi Tahunan
+var koleksiTahunan = ee.ImageCollection(tahun.map(hitungTahunan));
+
+// Mencetak Hasil Akhir
+print('Koleksi Tahunan:', koleksiTahunan);
+
+// Memilih Citra untuk Tahun 2022
+var tahun2022Hujan = koleksiTahunan.filter(ee.Filter.eq('tahun', 2022)).first();
+
+// Memotong Data Curah Hujan sesuai ROI
+var tahun2022Clip = tahun2022Hujan.clip(geometry);
+
+// Parameter Visualisasi
+var vis = {
+  min: 5, 
+  max: 16, 
+  palette: ['red', 'darkorange', 'yellow', 'limegreen', 'darkgreen']};
+  
+// Menampilkan Curah Hujan Tahun 2022
+Map.addLayer(tahun2022Clip, vis, 'Curah Hujan Tahun 2022');
