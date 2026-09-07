@@ -1,0 +1,13 @@
+//******************** Rainfall Estimation ********************
+
+// Koleksi Dataset
+var dataset = ee.ImageCollection('UCSB-CHG/CHIRPS/DAILY')
+
+  // Filter Tanggal Dataset
+  .filterDate('2022-01-01', '2023-01-01')
+  
+  // Memilih Band Dataset Daily
+  .select('precipitation');
+  
+// Print Dataset
+print(dataset);
