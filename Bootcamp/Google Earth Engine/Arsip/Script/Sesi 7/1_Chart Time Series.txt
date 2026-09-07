@@ -1,0 +1,40 @@
+//********************************** Chart ********************************
+
+// Memilih Dataset
+var dataset = ee.ImageCollection('UCSB-CHG/CHIRPS/DAILY')
+
+  // Filter Tahun 2022
+  .filterDate('2022-01-01', '2023-01-01')
+  
+  // Pilih Band Curah Hujan
+  .select('precipitation');            
+  
+// Menentukan Lokasi
+var lokasi = ee.Geometry.Point([110.4145, -6.9932]); // Simpang Lima, Semarang
+
+// Hitung Rata-Rata Curah Hujan pada Lokasi
+var chart = ui.Chart.image.series({
+  imageCollection: dataset,      // Data citra
+  region: lokasi,                // Lokasi pengamatan
+  reducer: ee.Reducer.mean(),    // Perhitungan rata-rata
+  scale: 5566,                   // Resolusi spasial
+  xProperty: 'system:time_start' // Waktu sebagai sumbu-x
+});
+
+// Pengaturan Chart
+chart.setOptions({
+  title: 'Perubahan Curah Hujan di Lokasi\n(Tahun 2022)',
+  hAxis: {title: 'Waktu'},          // Judul sumbu-x
+  vAxis: {title: 'Precipitation'},  // Judul sumbu-y
+  lineWidth: 2,                     // Lebar garis
+  pointSize: 4                      // Ukuran titik data
+});
+
+// Fokuskan pada Lokasi
+Map.centerObject(lokasi, 10); 
+
+// Tampilkan Lokasi
+Map.addLayer(lokasi, {color: 'red'}, 'Lokasi'); 
+
+// Tampilkan Chart
+print(chart);
