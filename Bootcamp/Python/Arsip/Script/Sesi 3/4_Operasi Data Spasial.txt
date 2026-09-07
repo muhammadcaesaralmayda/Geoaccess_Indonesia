@@ -1,0 +1,107 @@
+Pada bagian ini, kita akan membahas tentang operasi dasar dalam Geopandas
+ yang meliputi seleksi data, filtering data, dan re-proyeksi CRS. 
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+Seleksi Data: Fokus pada pemilihan data berdasarkan label, indeks, atau posisi. Misalnya, memilih kolom tertentu atau baris berdasarkan indeks.
+Filtering Data: Fokus pada pemilihan data berdasarkan kondisi atau kriteria tertentu yang diterapkan pada nilai data.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+# Kita definisikan ulang data  adm_bdg karena di sub-materi sebelumnya sudah diubah-ubah, jadi kita kembalikan ke kondisi semula.
+
+adm_bdg = gpd.read_file("Bandung_DesaAdmin.shp")
+adm_bdg.head(10)
+
+********************************************** MEMILIH KOLOM TERTENTU ***********************************************************
+
+# Memilih kolom tertentu
+adm_bdg_selected = adm_bdg[['WADMKD', 'PENDUDUK', 'geometry']]
+
+# Menampilkan data yang dipilih
+adm_bdg_selected.head()
+
+********************************************** MEMILIH BARIS TERTENTU ***********************************************************
+
+adm_bdg.head(3)
+
+# Misalnya memilih baris dengan indeks 0 hingga 4
+adm_bdg_slice = adm_bdg[0 : 4]
+adm_bdg_slice
+
+# Memilih kolom 'KECAMATAN' dan 'PENDUDUK' untuk semua baris
+adm_bdg.loc[:, ['WADMKD', 'PENDUDUK']]  # .loc digunakan untuk memilih berdasarkan label
+
+# Memilih semua data di Kecamatan 'CICENDO'
+cicendo = adm_bdg.loc[adm_bdg['WADMKC'] == 'Cicendo']
+cicendo
+
+# Memilih kolom 'PENDUDUK' untuk Kecamatan 'CICENDO'
+penduduk_cicendo = adm_bdg.loc[adm_bdg['WADMKC'] == 'Cicendo', 'PENDUDUK']
+penduduk_cicendo
+
+# Memilih baris pertama (indeks 0) dan semua kolom
+baris_1 = adm_bdg.iloc[0, :]  # .iloc digunakan untuk memilih berdasarkan nomor indeks
+baris_1
+
+# Misalkan Memilih baris pertama hingga kelima (indeks 0 sampai 4)
+adm_bdg.iloc[0:5, 3:]
+
+********************************************** MEMILIH DATA BERDASARKAN KONDISI TERTENTU ***********************************************************
+
+# Filtering dengan kondisi AND
+penduduk_besar = adm_bdg[(adm_bdg['WADMKC'] == 'Regol') & (adm_bdg['PENDUDUK'] > 80000)]
+penduduk_besar
+
+# Filtering dengan kondisi OR
+penduduk_besar = adm_bdg[(adm_bdg['WADMKC'] == 'Regol') | (adm_bdg['PENDUDUK'] > 80000)]
+penduduk_besar
+
+********************************************** Filtering Berdasarkan Daftar Nilai (Menggunakan isin())***********************************************************
+
+# Daftar kecamatan
+kecamatan_tertentu = ['Regol']
+
+# Filtering kelurahan di kecamatan tertentu
+kelurahan_kecamatan_tertentu = adm_bdg[adm_bdg['WADMKC'].isin(kecamatan_tertentu)]
+
+kelurahan_kecamatan_tertentu
+
+********************************************** AGREGASI DATA ***********************************************************
+
+adm_bdg[['WADMKC','PENDUDUK']]
+
+# Mengelompokkan berdasarkan Kecamatan dan menghitung total penduduk
+penduduk_per_kecamatan = adm_bdg.groupby('WADMKC')['PENDUDUK'].sum().reset_index()
+
+# Menampilkan hasil
+penduduk_per_kecamatan.head(10)
+
+
+********************************************** RE- PROYEKSI ***********************************************************
+
+# Memuat Data baru
+adm_bdg = gpd.read_file("Bandung_DesaAdmin.shp")
+permukiman = gpd.read_file("PEMUKIMAN_AR_25K.shp") # data poligon
+jalan = gpd.read_file("Jalan.shp") # data garis
+pendidikan = gpd.read_file("PENDIDIKAN_PT_25K.shp") # data titik
+
+# Cek CRS Setiap Data
+print (adm_bdg.crs)
+print(permukiman.crs)
+print(jalan.crs)
+print(pendidikan.crs)
+
+# Melakukan konversi proyeksi ke EPSG:32748
+adm_bdg = adm_bdg.to_crs(epsg=32748)
+permukiman = permukiman.to_crs(epsg=32748)
+jalan = jalan.to_crs(epsg=32748)
+pendidikan = pendidikan.to_crs(epsg=32748)
+
+# Cek CRS Data yang sudah dikonversi
+print(adm_bdg.crs)
+print(permukiman.crs)
+print(jalan.crs)
+print(pendidikan.crs)
