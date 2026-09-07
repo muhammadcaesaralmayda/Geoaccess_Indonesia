@@ -1,0 +1,88 @@
+FUNCTION/FUNGSI
+
+Fungsi di Python adalah blok kode yang dirancang untuk melakukan tugas tertentu dan dapat dipanggil berulang kali, 
+menghindari penulisan kode yang sama berulang-ulang.
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+Bayangkan fungsi di Python seperti resep memasak.
+
+Definisi fungsi adalah resepnya, yang memberi tahu langkah-langkah yang harus dilakukan.
+Parameter adalah bahan-bahan yang dimasukkan ke dalam resep.
+Return adalah hidangan yang sudah jadi.
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+Struktur Fungsi:
+
+def nama_fungsi(parameter1, parameter2):
+    # blok kode
+    return nilai  # (opsional)
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+##Contoh Menghitung Luas Segitiga tanpa Fungsi
+
+a1 = 30
+t1 = 50
+
+l1 = a1*t1//2
+print(l1)
+
+##Contoh Menghitung Luas Segitiga dengan Fungsi
+
+def luas_segitiga(alas, tinggi):
+  luas = alas*tinggi/2
+  return luas
+
+luas_segitiga(120, 70)
+
+
+l4 = luas_segitiga(70,60)
+l5= luas_segitiga(20, 6)
+l6= luas_segitiga(12, 7)
+
+print(l4)
+print(l5)
+print(l6)
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+#Fungsi tanpa parameter dan return:
+
+def say_hello():
+  print("Hello, World!")
+
+say_hello()  # Output: Hello, World!
+----------------------------------------------------------------------------------------------------------------------------------------------
+#Fungsi dengan parameter:
+
+def greet(nama):
+  print(f"Halo, {nama}!")
+
+greet("Geoaccess") 
+----------------------------------------------------------------------------------------------------------------------------------------------
+#Fungsi dengan parameter dan return:
+
+def tambah(a, b):
+  return a + b
+
+hasil = tambah(5, 3)
+print(hasil)  # Output: 8
+----------------------------------------------------------------------------------------------------------------------------------------------
+#Fungsi dengan nilai default, jika tidak ada nilai dalam parameter yang diberikan
+
+def greet(nama="Teman"):
+  print(f"Halo, {nama}!")
+
+greet()  # Output: Halo, Teman!
+greet("Geoaccess")
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+#Mengembalikan Beberapa Nilai
+
+def operasi_matematika(a, b):
+  return a + b, a - b, a * b, a / b
+
+hasil_tambah, hasil_kurang, hasil_kali, hasil_bagi = operasi_matematika(10, 2)
+print(hasil_tambah, hasil_kurang, hasil_kali, hasil_bagi)
+# Output: 12 8 20 5.0
