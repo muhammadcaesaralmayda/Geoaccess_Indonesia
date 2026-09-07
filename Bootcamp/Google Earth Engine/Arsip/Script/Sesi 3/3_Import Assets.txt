@@ -1,0 +1,14 @@
+//**************************** Visualisasi Data Vektor ****************************
+
+// Menampilkan Data Vektor pada Layer Peta
+Map.addLayer(geometry, {}, 'Kota Semarang');
+
+// Menampilkan Data Vektor dengan Simbologi 1
+Map.addLayer(geometry, {
+  color: '0082e6',
+},'Kota Semarang - Simbologi 1');
+
+// Menampilkan Data Vektor dengan Simbologi 2
+Map.addLayer(geometry, {
+  color : 'red'
+}, 'Kota Semarang - Simbologi 2');
