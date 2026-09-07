@@ -1,0 +1,28 @@
+//******************** Rainfall Classification ********************
+
+// Menghitung Nilai Minimum Maksimum
+var minMax = tahun2022Clip.reduceRegion({
+  reducer: ee.Reducer.minMax(),
+  scale: 5566,
+  geometry: geometry,
+  maxPixels: 1e20
+});
+print('Nilai Minimum dan Maksimum di Jawa Tengah:', minMax);
+
+// Raster Reclassify
+var tahun2022Clip_reclass = ee.Image(tahun2022Clip)
+  .where(tahun2022Clip.gt(0).and(tahun2022Clip.lte(8)), 1)
+  .where(tahun2022Clip.gt(8).and(tahun2022Clip.lte(10)), 2)
+  .where(tahun2022Clip.gt(10).and(tahun2022Clip.lte(12)), 3)
+  .where(tahun2022Clip.gt(12).and(tahun2022Clip.lte(14)), 4)
+  .where(tahun2022Clip.gt(14).and(tahun2022Clip.lte(20)), 5);
+
+// Parameter Visualisasi Reclassify 
+var tahun2022Clip_reclass_param = {	
+	min: 1, 
+	max: 5, 
+	palette: ['#ff0000', '#ffa100', '#f3ff00', '#00831a', '#00fd33'],
+};
+
+// Menampilkan Hasil Reclassify ke Peta
+Map.addLayer(tahun2022Clip_reclass, tahun2022Clip_reclass_param, 'Rainfall Classification');
