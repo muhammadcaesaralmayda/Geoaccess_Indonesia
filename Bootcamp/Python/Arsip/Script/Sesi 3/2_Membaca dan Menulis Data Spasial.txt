@@ -1,0 +1,37 @@
+Geopandas menyediakan antarmuka yang mudah untuk membaca dan menulis berbagai format file spasial. 
+Format yang umum digunakan meliputi Shapefile (.shp), GeoJSON (.geojson), dan KML (.kml).
+-----------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+# Sebelumnya, pastikan kita sudah mengimport Geopandas
+import geopandas as gpd
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+*************************************************MEMBACA DATA SPASIAL******************************************************************
+
+
+Fungsi utama yang digunakan untuk membaca data spasial di Geopandas adalah gpd.read_file(). 
+Fungsi ini mampu membaca berbagai jenis format data spasial.
+
+# Membaca file Shapefile
+adm_bdg = gpd.read_file("Bandung_DesaAdmin.shp")
+
+# Menampilkan lima baris pertama
+adm_bdg.head()
+-----------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+***********************************************MENULIS/MENYIMPAN DATA SPASIAL***********************************************************
+
+
+Setelah kita memanipulasi atau menganalisis data spasial,kita bisa menyimpan GeoDataFrame yang telah dimodifikasi kembali ke 
+file menggunakan metode to_file(). Anggap kita sudah melakukan analisis atau pengolahan data spasial, 
+berikut cara menyimpan data ke dalam format shapefile:
+
+# Menyimpan GeoDataFrame ke file shapefile baru
+adm_bdg.to_file("BATAS ADMINISTRASI BANDUNG.shp")
+
+# Menyimpan dalam format Geojson
+adm_bdg.to_file("BATAS ADMINISTRASI BANDUNG.geojson")
