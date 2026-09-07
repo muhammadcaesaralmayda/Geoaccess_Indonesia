@@ -1,0 +1,15 @@
+//************************Filter Image Collection************************
+
+// Filter Koleksi Citra Landsat
+var filter = ee.ImageCollection('LANDSAT/LC09/C02/T1_L2')
+
+  // Region of Interest (ROI)
+  .filterBounds(geometry)
+
+  // Filter Tanggal
+  .filterDate('2022-07-01', '2022-09-01')
+
+  // Filter Awan
+  .filter(ee.Filter.lt('CLOUD_COVER', 20));
+
+print(filter);
