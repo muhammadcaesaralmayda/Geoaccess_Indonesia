@@ -1,0 +1,54 @@
+//******************** Rainfall Estimation ********************
+
+// Koleksi Dataset
+var dataset = ee.ImageCollection('UCSB-CHG/CHIRPS/DAILY')
+
+  // Filter Tanggal Dataset
+  .filterDate('2022-01-01', '2023-01-01')
+  
+  // Memilih Band Dataset Daily
+  .select('precipitation');
+  
+// Print Dataset
+print(dataset);
+
+//******************** Menghitung Rata-Rata Bulanan ********************
+
+// Fungsi untuk Rata-rata Bulanan
+var hitungBulanan = function(bulan) {
+  
+  // Konversi Bulan menjadi GEE Number 
+  bulan = ee.Number(bulan);
+  
+  // Filter Dataset Berdasarkan Bulan
+  var gambarBulanan = dataset
+    .filter(ee.Filter.calendarRange(bulan, bulan, 'month'))
+    
+    // Menghitung Rata-Rata dari Citra yang terfilter
+    .mean();
+  
+  // Menambahkan Informasi Bulan ke Citra
+  return gambarBulanan.set('bulan', bulan);
+};
+
+// Membuat Daftar Bulan (1-12)
+var bulan = ee.List.sequence(1, 12);
+
+// Membuat Koleksi Citra Bulanan
+var koleksiBulanan = ee.ImageCollection(bulan.map(hitungBulanan));
+
+// Mencetak Hasil Akhir
+print('Koleksi Bulanan:', koleksiBulanan);
+
+// Memilih Citra untuk Bulan Januari
+var januariHujan = koleksiBulanan.filter(ee.Filter.eq('bulan', 1)).first();
+
+// Memotong Data Curah Hujan sesuai ROI
+var januariClip = januariHujan.clip(geometry);
+
+// Menampilkan Curah Hujan Bulan Januari
+Map.addLayer(januariClip, 
+  {min: 6, max: 20, palette: ['red', 'darkorange', 'yellow', 'limegreen', 'darkgreen']}, 
+  'Curah Hujan Januari');
+
+Map.centerObject(geometry);
