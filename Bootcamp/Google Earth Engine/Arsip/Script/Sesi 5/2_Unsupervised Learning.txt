@@ -1,0 +1,24 @@
+//******************** Menambahkan Spectral Indices ********************
+
+var landsat9_with_indices = landsat9
+  .addBands(NDVI_1.rename('NDVI'))
+  .addBands(NDWI.rename('NDWI'))
+  .addBands(NDBI.rename('NDBI'));
+
+//******************** Unsupervised Learning********************
+
+// Mendefinisikan Training Sample
+var signature = landsat9_with_indices.sample({
+  region: geometry,
+  scale: 30,
+  numPixels: 5000
+});
+
+// Instansiasi Algoritm Clusterer
+var clusterer = ee.Clusterer.wekaKMeans(5).train(signature);
+
+// Mengelompokkan Gambar Berdasarkan Algoritm Clusterer Terlatih Sebelumnya
+var unsupervised = landsat9_with_indices.cluster(clusterer);
+
+// Menampilkan Cluster dengan Warna Acak
+Map.addLayer(unsupervised.randomVisualizer(), {}, 'Landcover (KMeans)');
