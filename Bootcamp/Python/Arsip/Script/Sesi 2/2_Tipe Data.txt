@@ -1,0 +1,57 @@
+##TIPE DATA
+
+Integer (int): Bilangan bulat, positif atau negatif, tanpa desimal.
+Float (float): Bilangan desimal (floating point).
+String (str): Teks atau urutan karakter.
+Boolean (bool): True atau False, digunakan dalam logika dan conditional statements.
+NoneType: Menyatakan ketiadaan nilai atau null.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+##Contoh tipe data dasar
+
+angka_bulat = 10  # Integer
+angka_bulat2 = 8
+angka_desimal = 3.14  # Float
+teks = "1"  # String
+status = True  # Boolean
+tanpa_nilai = None  # NoneType
+
+print(type(angka_bulat))  # Output: <class 'int'>
+print(type(angka_desimal))  # Output: <class 'float'>
+print(type(teks))  # Output: <class 'str'>
+print(type(status))  # Output: <class 'bool'>
+print(type(tanpa_nilai))  # Output: <class 'NoneType'>
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+Koleksi adalah tipe data yang bisa menyimpan lebih dari satu item dalam satu variabel. 
+Python memiliki beberapa tipe koleksi, antara lain:
+
+List: Urutan elemen yang bisa diubah (mutable) dan mengizinkan duplikasi.
+Tuple: Urutan elemen yang tidak bisa diubah (immutable).
+Dictionary (dict): Kumpulan pasangan kunci-nilai (key-value pairs).
+Set: Kumpulan elemen unik, tidak berurutan.
+--------------------------------------------------------------------------------------------------------------------------------------------
+##Contoh List
+daftar_angka = [1, 2.5, 'kucing', 4, 5]
+print(type(daftar_angka))  # Output: <class 'list'>
+
+##Contoh Tuple
+koordinat = (4.5, 7.8)
+print(type(koordinat))  # Output: <class 'tuple'>
+
+##Contoh Dictionary
+data_spasial = {"nama": "Titik A",
+                "latitude": -6.1751,
+                "longitude": 106.8650}
+print(type(data_spasial))  # Output: <class 'dict'>
+
+##Contoh Set
+himpunan_angka = {1, 2, 3, 4, 4, 5}  # Set hanya menyimpan elemen unik
+print(type(himpunan_angka))  # Output: <class 'set'>
+print(himpunan_angka)  # Output: {1, 2, 3, 4, 5}
+
+print(daftar_angka)
+print(koordinat)
+print(data_spasial)
+print(himpunan_angka)
