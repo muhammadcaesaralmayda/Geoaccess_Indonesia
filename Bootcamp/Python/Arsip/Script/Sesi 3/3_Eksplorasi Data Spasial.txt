@@ -1,0 +1,73 @@
+Sebelum mulai melakukan analisis, penting untuk memahami struktur data dengan mengeksplorasi isi dan karakteristiknya. 
+Kita bisa mengecek tipe data, kolom, menambahkan kolom, menghapus kolom, atau menggabungkan dua kolom.
+----------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+*************************************CEK TIPE DATA, DIMENSI DATA, DAN KOLOM *************************************************
+
+# Menampilkan informasi tipe data setiap kolom
+adm_bdg.info()
+
+# Menampilkan dimensi data (jumlah baris dan kolom)
+adm_bdg.shape
+
+# Menampilkan banyak data
+len(adm_bdg)
+
+# Menampilkan nama-nama kolom
+adm_bdg.columns
+
+
+*********************************************** MENGAKSES KOLOM TERTENTU *******************************************************
+
+adm_bdg.head(3)
+
+# Semisal Kita ingin menampilkan nama kelurahan beserta kodenya
+kelurahan_bdg = adm_bdg[['WADMKD', 'KDEPUM']]
+kelurahan_bdg
+
+**************************************************** CEK NILAI UNIK *************************************************************
+
+adm_bdg
+
+# Semisal kita ingin menampilkan nama-nama kecamatan yang ada di Bandung
+adm_bdg['WADMKC']
+
+adm_bdg['WADMKC'].unique()
+
+
+************************************************* MENGUBAH NAMA KOLOM ************************************************************
+adm_bdg.head()
+  
+adm_bdg.rename(columns={"KDEPUM": "KODE_KELURAHAN"}, inplace=True)
+adm_bdg
+
+******************************************************* MENAMBAH KOLOM BARU ****************************************************************
+
+adm_bdg['NAMA_LENGKAP'] = None  #-----> None berarti isi kolom dibiarkan kosong terlebih dahulu
+adm_bdg
+
+***************************************************** MENGHAPUS KOLOM ATAU BARIS ***********************************************************
+
+# Semisal kita ingin menghapus kolom 'KODE KELURAHAN'
+
+adm_bdg
+
+adm_bdg = adm_bdg.drop('KODE_KELURAHAN', axis = 1)
+adm_bdg
+
+# Semisal kita ingin menghapus baris tertentu
+
+adm_bdg = adm_bdg.drop([0,2,5], axis = 0)
+adm_bdg
+
+******************************************************* MENGGABUNGKAN BEBERAPA KOLOM *********************************************************
+
+# Menggabungkan dua kolom dengan operasi penjumlahan
+
+adm_bdg['NAMA_LENGKAP'] = adm_bdg['WADMKD'] + ', ' + adm_bdg['WADMKC'] + ', ' + adm_bdg['WADMKK']
+adm_bdg
+
+*************************************************** CEK CRS/SISTEM KOORDINAT DATA SPASIAL ***************************************************
+
+adm_bdg.crs #------> strukturnya gdf.crs
