@@ -1,0 +1,11 @@
+//************************ Export Image ************************
+
+// Export Data
+Export.image.toDrive({
+  image: tahun2022Clip,
+  description: 'GEE_RainfallEstimation_2022',
+  folder: 'Bootcamp GEE',
+  scale: 5566,
+  region: geometry,
+  fileFormat: 'GeoTIFF'
+  });
