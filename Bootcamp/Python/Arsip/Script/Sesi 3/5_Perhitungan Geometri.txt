@@ -1,0 +1,33 @@
+******************************************************** MENGHITUNG LUAS **************************************************************
+Luas (area) dari suatu poligon dapat dihitung dengan menggunakan atribut .area. 
+Agar hasilnya akurat, pastikan data telah dire-proyeksi ke CRS dengan satuan meter, bukan derajat.
+
+adm_bdg['Luas'] = adm_bdg.geometry.area
+adm_bdg.head()
+
+adm_bdg['Luas_hektar'] = adm_bdg.geometry.area / 10000 # luas dalam hektar
+adm_bdg.head()
+
+# Total luas per kecamatan
+luas_kecamatan = adm_bdg.groupby('WADMKC')['Luas'].sum().reset_index()
+
+# Tambahkan kolom hektar
+luas_kecamatan['Luas_hektar'] = luas_kecamatan['Luas'] / 10000
+
+luas_kecamatan.head(10)
+
+******************************************************** MENGHITUNG PANJANG **************************************************************
+
+jalan.head()
+
+jalan['Panjang_km'] = jalan.geometry.length / 1000  # Panjang dalam km
+jalan.head()
+
+******************************************************** PERHITUNGAN KOORDINAT **************************************************************
+
+# Mengambil koordinat X (longitude) dan Y (latitude) dari titik
+pendidikan['X'] = pendidikan.geometry.x
+pendidikan['Y'] = pendidikan.geometry.y
+
+# Menampilkan data teratas
+pendidikan.head()
