@@ -1,0 +1,81 @@
+##OPERASI MATEMATIKA DASAR
+
+a = 10
+b = 5
+
+penjumlahan = a + b
+pengurangan = a - b
+perkalian = a * b
+pembagian = a / b
+sisa_bagi = a % b
+
+print(penjumlahan)
+print(pengurangan)
+print(perkalian)
+print(pembagian)
+print(sisa_bagi)
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+a = 10
+b = 5
+
+penjumlahan = a + b
+pengurangan = a - b
+perkalian = a * b
+pembagian = a / b
+sisa_bagi = a % b
+
+print(f"Penjumlahan: {penjumlahan}")   #------> f digunakan untuk menyisipkan variabel atau nilai ke dalam keterangan saat melakukan print.
+print(f"Pengurangan: {pengurangan}")
+print(f"Perkalian: {perkalian}")
+print(f"Pembagian: {pembagian}")
+print(f"Sisa Bagi (modulus): {sisa_bagi}")
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+##OPERASI PANGKAT DAN AKAR
+
+pangkat = a ** b  # a pangkat b
+akar = a ** 0.5   # Akar kuadrat dari a
+
+print(f"10 pangkat 5: {pangkat}")
+print(f"Akar kuadrat dari 10: {akar}")
+print(f"Akar kuadrat dari 10: {akar:.2f}")
+
+print("Akar kuadrat dari 10:", akar)
+print("Akar kuadrat dari 10:", round(akar, 2))
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+##PEMBULATAN DAN OPERASI LAINNYA
+
+bilangan_float = 7.89
+
+pembulatan = round(bilangan_float)  # Membulatkan 7.89 menjadi 8
+pembulatan_bawah = int(bilangan_float)  # Membulatkan ke bawah menjadi 7
+
+print(f"Pembulatan biasa: {pembulatan}")
+print(f"Pembulatan ke bawah: {pembulatan_bawah}")
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+##OPERATOR PEMBANDING
+
+x = 10
+y = 5
+
+print(x > y)   # True, karena 10 lebih besar dari 5
+print(x == 10) # True, karena x sama dengan 10
+print(y != 5)  # False, karena y sama dengan 5
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+##OPERATOR LOGIKA
+
+x = True
+y = False
+
+print(x and y)  # False, karena and memerlukan kedua nilai True
+print(x or y)   # True, karena salah satu True
+print(not x)    # False, karena not membalik nilai
+
+-------------------------------------------------------------------------------------------------------------------------------------------
