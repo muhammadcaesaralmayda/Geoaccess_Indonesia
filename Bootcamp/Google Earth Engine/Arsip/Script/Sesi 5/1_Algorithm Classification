@@ -1,0 +1,36 @@
+//******************** Unsupervised Algorithm ********************
+
+// Cascade simple Kmeans
+var Clusters_CascadeKMeans = ee.Clusterer.wekaCascadeKMeans(4, 4).train(signature);
+
+// Cobweb clustering
+var Clusters_Cobweb = ee.Clusterer.wekaCobweb().train(signature);
+
+// KMeans
+var Clusters_KMeans = ee.Clusterer.wekaKMeans(4).train(signature);
+
+// Learning Vector Quantization (LVQ)
+var Clusters_LVQ = ee.Clusterer.wekaLVQ(4).train(signature);
+
+// X-Means
+var Clusters_XMeans = ee.Clusterer.wekaXMeans(4, 4).train(signature);
+
+
+
+//******************** Supervised Algoritm ********************
+
+
+// Classification and Regression Tree (CART)
+var cart  = ee.Classifier.smileCart().train({
+
+// Random Forest
+var random_forest = ee.Classifier.smileRandomForest().train({
+
+// Support Vector Machine (SVM)
+var svm = ee.Classifier.libsvm().train({
+
+// Minimum Distance
+var min_distance = ee.Classifier.minimumDistance().train({
+
+// Naive Bayes
+var naive_bayes = ee.Classifier.smileNaiveBayes().train({
