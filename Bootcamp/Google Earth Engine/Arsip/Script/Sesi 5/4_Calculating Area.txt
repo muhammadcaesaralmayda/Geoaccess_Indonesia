@@ -1,0 +1,15 @@
+// ******************** Counting Pixels (sq m) ********************
+
+var luas = ee.Image.pixelArea()
+  .addBands(classification_rf)
+  .reduceRegion({
+    reducer: ee.Reducer.sum().group({
+      groupField: 1,
+      groupName: 'DN',
+    }),
+    geometry: geometry,
+    scale: 30,
+    maxPixels: 10e10
+  }).get('groups');
+
+print(luas);
