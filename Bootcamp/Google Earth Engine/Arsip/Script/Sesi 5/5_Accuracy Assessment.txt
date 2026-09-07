@@ -1,0 +1,51 @@
+//******************** Accuracy Assessment ********************
+
+// Dictionary warna berdasarkan nilai kelas tutupan lahan
+var colorDict = ee.Dictionary({
+  '0': 'blue',       // Badan Air
+  '1': 'green',      // Pohon
+  '2': 'yellow',     // Pertanian Lahan Kering
+  '3': 'red',        // Lahan Terbangun
+  '4': 'magenta'     // Tanah Terbuka
+});
+
+// Tambahkan Properti Style ke Setiap Titik
+var aa_roi = samples.map(function(feature) {
+
+  // Dapatkan nilai field
+  var val = feature.get('Value');
+  // Cari warna yang sesuai dari dictionary; jika tidak ada, gunakan 'black'
+  var color = ee.String(colorDict.get(val, 'black'));
+  
+  // Set properti style (misalnya untuk simbol titik dengan ukuran 5)
+  return feature.set('style', {
+    color: color, 
+    pointSize: 2
+  });
+});
+
+// Tampilkan FeatureCollection dengan style yang sudah di-set, langsung dengan satu Map.addLayer
+Map.addLayer(
+  aa_roi.style({styleProperty: 'style'}),
+  {},
+  'Accuracy Sample'
+);
+
+//Validasi Assessment Accuracy
+var validation = classification_rf.sampleRegions({
+  collection: aa_roi,
+  properties: ['Value'],
+  scale: 30
+});
+
+print('Total features in validation:', validation);
+
+//Menampilkan hasil Accuracy
+var accu = validation.errorMatrix('Value', 'classification');
+
+print('Confusion matrix: ', accu);
+
+print('Overall accuracy: ', accu.accuracy());
+print('Producers accuracy: ', accu.producersAccuracy());
+print('User accuracy: ', accu.consumersAccuracy());
+print('Kappa Coeficient: ', accu.kappa());
