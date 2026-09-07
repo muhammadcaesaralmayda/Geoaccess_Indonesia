@@ -1,0 +1,54 @@
+Conditional statements di Python memungkinkan kita untuk membuat keputusan dalam program. 
+Ini berarti kita dapat menjalankan bagian kode tertentu berdasarkan kondisi atau situasi tertentu. 
+Struktur dasar dari conditional statement di Python adalah menggunakan kata kunci if, elif (else if), dan else.
+----------------------------------------------------------------------------------------------------------------------------------------------
+Struktur Dasar Conditional Statement:
+
+if: Mengecek apakah suatu kondisi benar (True), dan jika benar, maka blok kode setelahnya akan dieksekusi.
+elif: (Optional) Untuk memberikan kondisi tambahan jika kondisi pertama salah. Kita bisa memiliki lebih dari satu elif.
+else: (Optional) Blok kode yang dijalankan jika semua kondisi if dan elif sebelumnya salah (False).
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+Struktur Sintaks Conditional Statement:
+
+if kondisi_1:
+    # Eksekusi jika kondisi_1 bernilai True
+elif kondisi_2:
+    # Eksekusi jika kondisi_1 bernilai False dan kondisi_2 bernilai True
+else:
+    # Eksekusi jika kondisi_1 dan kondisi_2 bernilai False
+----------------------------------------------------------------------------------------------------------------------------------------------
+##CONTOH 1
+
+umur = 79
+
+if umur < 18:
+    print("Anda adalah anak-anak.")
+elif 18 <= umur < 60:
+    print("Anda adalah orang dewasa.")
+else:
+    print("Anda adalah lansia.")
+
+##CONTOH 2
+
+nilai = 80
+
+if nilai >= 90:
+  print('A')
+elif nilai >= 80 and nilai < 90:
+  print('B')
+elif nilai >= 70 and nilai < 80:
+  print('C')
+elif nilai >= 60 and nilai < 70:
+  print('D')
+else:
+  print('E')
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+##Contoh 3 dengan 'or'
+hari = "Rabu"
+
+if hari == "Sabtu" or hari == "Minggu":
+    print("Selamat, hari ini adalah akhir pekan!")
+else:
+    print("Hari kerja, tetap semangat!")
