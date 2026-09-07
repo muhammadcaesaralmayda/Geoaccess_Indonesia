@@ -1,0 +1,74 @@
+//******************** Spectral Indices Band ********************
+
+// Mendefinisikan Band-Band yang Digunakan dalam Perhitungan Index Spectral
+var Red = landsat9.select('SR_B4');
+var NIR = landsat9.select('SR_B5');
+var SWIR1 = landsat9.select('SR_B6');
+
+//*********** Normalized Difference Vegetation Index (NDVI) *****************
+
+// Metode 1
+// Menghitung NDVI
+// NDVI = (NIR - Red) / (NIR + Red)
+var NDVI_1 = (NIR.subtract(Red)).divide(NIR.add(Red)).rename('NDVI');
+
+// Metode 2
+var NDVI_2 = landsat9.normalizedDifference(["SR_B5", "SR_B4"]).rename('NDVI');
+
+// Metode 3
+var NDVI_3 = landsat9.expression("(B5 - B4) / (B5 + B4)", {
+    B5: landsat9.select("SR_B5"),
+    B4: landsat9.select("SR_B4")
+}).rename('NDVI');
+
+// Mendefinisikan Parameter Visualiasi
+var NDVI_param = {
+  min: 0.00,
+  max: 0.80,
+  palette: [
+		'000000','a50026','d73027','f46d43','fdae61', 'fee08b',
+		'ffffbf','d9ef8b','a6d96a','66bd63','1a9850', '006837'
+	]
+};
+
+// Menampilkan NDVI pada Layar Peta
+Map.addLayer(NDVI_1, NDVI_param, 'NDVI Metode 1');
+Map.addLayer(NDVI_2, NDVI_param, 'NDVI Metode 2');
+Map.addLayer(NDVI_3, NDVI_param, 'NDVI Metode 3');
+
+//*********** Normalized Difference Water Index (NDWI) *****************
+
+// Menghitung NDWI
+// NDWI = (NIR - SWIR1) / (NIR + SWIR1)
+var NDWI = (NIR.subtract(SWIR1)).divide(NIR.add(SWIR1)).rename('NDWI');
+
+// Mendefinisikan Parameter Visualiasi
+var NDWI_param = {
+  min: -0.30,
+  max: 0.50,
+  palette: [
+		'e9ecf6','d4d8ed','bec5e4','a9b2db','939fd2',
+		'7d8bc9','6878c0','5265b7','3d51ae', '273ea5'
+	]
+};
+
+// Menampilkan NDWI pada Layar Peta
+Map.addLayer(NDWI, NDWI_param, 'NDWI');
+
+//*********** Normalized Difference Built-up Index (NDBI) *****************
+
+// Menghitung NDBI
+// NDBI = (SWIR1 - NIR) / (SWIR1 + NIR)
+var NDBI = (SWIR1.subtract(NIR)).divide(SWIR1.add(NIR)).rename('NDBI');
+
+var NDBI_param = {
+  min: -0.40,
+  max: 0.30,
+  palette: [
+		'006837','1a9850','66bd63','a6d96a','d9ef8b', 'ffffbf',
+		'fee08b','fdae61','f46d43','d73027','a50026', '000000'
+	]
+};
+
+// Menampilkan NDBI pada Layar Peta
+Map.addLayer(NDBI, NDBI_param, 'NDBI');
