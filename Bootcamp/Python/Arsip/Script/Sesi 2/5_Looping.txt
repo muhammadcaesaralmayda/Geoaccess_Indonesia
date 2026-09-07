@@ -1,0 +1,92 @@
+Loop adalah fitur penting dalam pemrograman yang memungkinkan kita untuk mengeksekusi 
+sebuah blok kode berulang kali selama kondisi tertentu terpenuhi. 
+Python mendukung dua jenis loop utama:
+
+- for loop
+- while loop
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+FOR LOOP
+
+for loop digunakan untuk mengulangi suatu tindakan berdasarkan elemen 
+dari suatu iterable (misalnya list, tuple, string, atau range). Setiap kali loop berjalan, 
+sebuah variabel diisi dengan satu elemen dari iterable tersebut. 
+For loop cocok digunakan ketika kita tahu berapa kali harus melakukan pengulangan.
+
+##contoh tanpa looping:
+
+buah = ["apel", "pisang", "mangga"]
+
+print('saya suka ', buah[0])
+print('saya suka ', buah[1])
+print('saya suka ', buah[2])
+
+##contoh dengan looping:
+
+buah = ["apel", "pisang", "mangga"]
+
+for item in buah:
+    print("Saya suka", item)
+----------------------------------------------------------------------------------------------------------------------------------------------
+FOR LOOP DENGAN RANGE
+
+Fungsi range() digunakan untuk menghasilkan daftar angka. Ini sering digunakan untuk mengontrol berapa kali loop dijalankan.
+
+##Contoh:
+
+for i in range(5):
+    print("Iterasi ke:", i)
+---------------------------------------------------------------------------------------------------------------------------------------------
+FOR LOOP DENGAN BREAK DAN CONTINUE
+
+break: Menghentikan loop sepenuhnya sebelum menyelesaikan semua iterasi.
+continue: Melewati sisa kode dalam iterasi saat ini dan melanjutkan dengan iterasi berikutnya.
+
+##Contoh dengan break:
+
+for angka in range(1, 10):
+    if angka == 5:
+        break  # Menghentikan loop ketika angka mencapai 5
+    print(angka)
+
+##Contoh dengan continue:
+
+for angka in range(1, 6):
+    if angka == 3:
+        continue  # Melompati angka 3
+    print(angka)
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+WHILE LOOP
+
+while loop terus berjalan selama kondisi tertentu bernilai True. 
+Loop ini sangat berguna jika kita tidak tahu berapa banyak iterasi yang 
+diperlukan dan hanya ingin loop berhenti saat suatu kondisi terpenuhi.
+
+##Contoh:
+
+angka = 1
+
+while angka <= 10:
+    print("Angka saat ini:", angka)
+    angka += 1  # Increment/kenaikan angka untuk menghindari loop tak berakhir
+----------------------------------------------------------------------------------------------------------------------------------------------
+##WHILE LOOP DENGAN BREAK DAN CONTINUE
+
+angka = 1
+
+while angka < 10:
+    if angka == 5:
+        break  # Menghentikan loop ketika angka mencapai 5
+    print(angka)
+    angka += 1
+
+
+
+angka = 0
+
+while angka < 5:
+    angka += 1
+    if angka == 3:
+        continue  # Melompati angka 3
+    print(angka)
