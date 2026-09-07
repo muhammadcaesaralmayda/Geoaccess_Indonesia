@@ -1,0 +1,25 @@
+//************************Load Image Multiband************************
+
+// Load Citra
+var landsat9 = ee.Image('LANDSAT/LC09/C02/T1_L2/LC09_120065_20220727')
+
+  // Multiple Band 
+  .select(['SR_B4', 'SR_B3', 'SR_B2'])
+
+  // Faktor Skala Band
+  .multiply(0.0000275).add(-0.2)
+
+  // Clip Raster
+  .clip(geometry);
+
+// Parameter Visualisasi Multipleband 
+var landsat9_param = {
+  min: 0, 
+  max: 0.3
+};
+
+// Menampilkan Citra pada Layer Peta
+Map.addLayer(landsat9, landsat9_param, 'RGB432');
+
+// Zoom ke ROI
+Map.centerObject(geometry);
