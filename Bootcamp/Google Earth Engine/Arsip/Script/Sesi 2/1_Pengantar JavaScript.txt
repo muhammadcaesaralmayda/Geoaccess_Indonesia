@@ -1,0 +1,11 @@
+// Contoh String
+var salam = 'Selamat pagi peserta';
+print(salam);
+
+// Contoh Number
+var number = 25;
+print(number);
+
+// Contoh List
+var list = [salam, number, 'Short Course Geoaccess'];
+print(list);
