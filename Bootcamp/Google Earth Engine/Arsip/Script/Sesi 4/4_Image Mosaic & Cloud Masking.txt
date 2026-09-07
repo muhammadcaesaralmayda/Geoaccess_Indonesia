@@ -1,0 +1,51 @@
+//******************** Image Mosaic & Cloud Masking ********************
+
+var landsat9_mask = function(image) {
+
+  // Bitmask untuk bayangan awan
+  var cloudShadowBitMask = (1 << 4);
+
+  // Bitmask untuk awan
+  var cloudsBitMask = (1 << 3);
+
+  // Memilih band QA_PIXEL dari citra
+  var qa = image.select('QA_PIXEL');
+
+  // Piksel tanpa bayangan awan
+  var mask = qa.bitwiseAnd(cloudShadowBitMask).eq(0)
+
+    // Piksel tanpa awan
+    .and(qa.bitwiseAnd(cloudsBitMask).eq(0));
+    return image.updateMask(mask);
+};
+
+
+//******************** Filter, Load, & Clip Image********************
+
+// Koleksi Citra
+var landsat9 = ee.ImageCollection('LANDSAT/LC09/C02/T1_L2')
+
+  // Filter Tanggal
+  .filterDate('2022-01-01', '2023-01-01')
+
+  // Load Masking Data Collection
+  .map(landsat9_mask)
+  .median()
+
+  // Clip Raster
+  .clip(geometry)
+
+  // Multiple Band 
+  .select (['SR_B6', 'SR_B5', 'SR_B4','SR_B3', 'SR_B2', 'SR_B1','SR_B7'])
+
+  //Faktor Skala Band
+  .multiply(0.0000275).add(-0.2);
+
+// Parameter Visualisasi Multipleband
+var landsat9_param = {min: 0.0, max: 0.4,};
+
+// Menampilkan Citra pada Layer Peta
+Map.addLayer(landsat9, landsat9_param, 'Vegetation Analysis');
+
+// Zoom ke ROI
+Map.centerObject(geometry);
