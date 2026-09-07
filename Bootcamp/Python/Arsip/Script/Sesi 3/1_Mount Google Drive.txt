@@ -1,0 +1,21 @@
+Google Colab menyediakan ruang penyimpanan yang ada di environmentnya. Kita dapat mengunggah data ke dalamnya. 
+Akan tetapi penyimpanan ini sifatnya semenatara.
+
+Hal ini akan cukup merepotkan jika harus selalu mengunggah data setiap masuk ke Google Colab. 
+Untuk itu, akan lebih baik jika kita atur lokasi penyimpanan data agar Google Colab langsung mengakses penyimpanan Google Drive.
+--------------------------------------------------------------------------------------------------------------------------------------
+***************************************MOUNT KE GOOGLE DRIVE / MENGHUBUNGKAN GOOGLE COLAB KE GOOGLE DRIVE******************************
+
+import os
+# Membaca Penyimpanan Drive, setujui izin akes ketika muncul pop up perizinan
+from google.colab import drive
+drive.mount('/content/drive') # Penyimpanan di atur ke folder '/content/drive' (default)
+
+# Menentukan lokasi penyimpanan lokasi yang kta inginkan
+loc = '/content/drive/MyDrive/Data Simulasi/Shapefile/' # Lokasi penyimpanan yang diarahkan/disesuaikan dengan masing2 google drive
+
+# Mengubah ke penyimpoanan yang sudah kita deifinisikan sebelumnya
+os.chdir(loc)
+
+# Cek lokasi penyimpanan apakah sudah sesuai dengan yang sudah kita tenetukan
+print('Working Directory: ',os.getcwd())
