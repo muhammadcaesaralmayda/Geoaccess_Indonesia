@@ -1,0 +1,20 @@
+# Cek pustakas yang terinstal
+!pip list
+
+
+# Contoh cara instal pustaka yang akan digunbakan dan tidak ada di Colab
+!pip install shapely
+
+
+#Contoh cara instal pustaka lebih dari satu secara bersamaan
+!pip install gdal osmnx rasterio #setiap library dipisah dengan spasi
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+# Cara memanggil pustaka/library
+
+import pandas as pd
+import geopandas as gpd
+import shapely
+import rasterio
+import osmnx as ox
