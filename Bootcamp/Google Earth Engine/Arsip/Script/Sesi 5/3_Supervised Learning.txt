@@ -1,0 +1,43 @@
+//******************** Menambahkan Spectral Indices ********************
+
+var landsat9_with_indices = landsat9
+  .addBands(NDVI_1.rename('NDVI'))
+  .addBands(NDWI.rename('NDWI'))
+  .addBands(NDBI.rename('NDBI'));
+
+//******************** Supervised Classification ********************
+
+// Menggabungkan Training Samples
+var roi_ts = BadanAir
+  .merge(Pohon)
+  .merge(PertanianLahanKering)
+  .merge(LahanTerbangun)
+  .merge(TanahTerbuka);
+
+// Band Sample
+var bands = ['SR_B2', 'SR_B3', 'SR_B4', 'SR_B5', 'SR_B6', 'SR_B7', 'NDVI', 'NDWI', 'NDBI'];
+
+// Ekstraksi Nilai Band dengan Training Samples
+var signature = landsat9_with_indices.select(bands).sampleRegions({
+  collection: roi_ts,
+  properties: ['lc'],
+  scale: 30  // Sesuaikan dengan Resolusi Spasial Citra Satelit
+}); 
+
+// Instalasi Algoritma Klasifikasi Supervised
+var randomforest = ee.Classifier.smileRandomForest(100).train({
+  features: signature,
+  classProperty: 'lc',
+  inputProperties: bands
+}); 
+
+// Klasifikasi Supervised
+var classification_rf = landsat9_with_indices.select(bands).classify(randomforest);
+
+// Menampilkan Hasil Klasifikasi pada Layer Peta
+Map.addLayer(classification_rf, {
+  min: 0, 
+  max: 4, 
+  palette: ['blue','green','yellow','orange','magenta']
+  
+}, 'Landcover (Random Forest)');
