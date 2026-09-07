@@ -1,0 +1,26 @@
+Variabel adalah tempat penyimpanan nilai. 
+Python mendukung berbagai tipe data seperti integer (bilangan bulat), float (bilangan desimal), string (teks), 
+list (daftar nilai), dan dictionary (pasangan kunci-nilai).
+---------------------------------------------------------------------------------------------------------------------------------------------
+##Contoh Variabel:
+a = 10
+a #----> dapat untuk memanggil variabel tersebut, atau dengan menggunakan perintah print()
+print(a)
+---------------------------------------------------------------------------------------------------------------------------------------------
+Hal yang perlu diperhatikan dalam mendeklarasikan variabel, bahwa:
+Variabel tidak boleh diawali oleh angka
+Variabel tidak boleh menggunakan spasi (jika diperlukan, gunakan underscore)
+Tidak boleh ada simbol-simbol tertentu pada nama variabel (%,&,#,!,dll)
+Nama variabel harus mudah dipahami
+---------------------------------------------------------------------------------------------------------------------------------------------
+##Variabel diawali oleh angka
+
+3angka = [1, 2, 3] #----> contoh salah
+print(3angka)
+
+3 angka = [1, 2, 3] #-----> contoh salah
+print(3 angka)
+
+tiga_angka = [1, 2, 3] #-----> contoh benar
+print(tiga_angka)
+---------------------------------------------------------------------------------------------------------------------------------------------
