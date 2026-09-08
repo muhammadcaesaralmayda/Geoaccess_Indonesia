@@ -1,0 +1,150 @@
+********************************************************** TAMPILKAN DATA ******************************************************
+
+fig, ax= plt.subplots(figsize=(8, 8))
+
+permukiman.plot(ax=ax)
+
+plt.show()
+
+********************************************************** CENTROID ******************************************************
+
+# Membuat Centroid setiap fitur
+permukiman_centroid = permukiman.centroid
+permukiman_centroid.head()
+
+###### RUBAH KE GEODATAFRAME
+
+# Ubah ke dalam GeoDataFrame
+seb_permukiman_point = gpd.GeoDataFrame(geometry=permukiman.centroid)
+
+# Join atribut yang ada di poigon asalnya ke centroid
+seb_permukiman_point = gpd.sjoin(seb_permukiman_point, permukiman, how='inner')
+
+seb_permukiman_point.head()
+
+###### TAMPILKAN HASIL
+
+# Baru plot hasil UTM
+fig, ax = plt.subplots(figsize=(8, 8))
+seb_permukiman_point.plot(ax=ax, marker='o', color='red', markersize=0.1)
+
+ax.set_title("Sebaran Permukiman (UTM)")
+ax.set_xlabel("Easting (meter)")
+ax.set_ylabel("Northing (meter)")
+
+plt.show()
+
+###### zoom ke bagian tertentu
+
+fig, ax= plt.subplots(figsize=(8, 8))
+
+seb_permukiman_point.plot(ax=ax, marker='o', color='red', markersize=1)
+
+ax.set_xlim(789000, 792000)
+ax.set_ylim(9.239e6, 9.242e6)
+
+plt.show()
+
+********************************************************** BUFFER ******************************************************
+
+fig, ax= plt.subplots(figsize=(8, 8))
+
+# Plot data jalan
+jalan.plot(ax=ax, edgecolor='red')
+
+# Tampilkan peta
+plt.show()
+
+
+fig, ax= plt.subplots(figsize=(8, 8))
+
+# Plot data jalan di Kecamatan Regol
+jalan_regol.plot(ax=ax, edgecolor='red')
+
+# Tampilkan peta
+plt.show()
+
+######## HITUNG BUFFER
+
+# Buat buffer 50 meter
+buffer_50 = gpd.GeoDataFrame(geometry=jalan_regol.buffer(50))
+
+# Tambahkan kolom keterangan
+buffer_50['keterangan'] = 'Buffer Jalan 50'
+
+# Cek hasil
+buffer_50.head()
+
+######## TAMPILKAN HASIL
+
+fig, ax = plt.subplots(figsize=(8, 8))
+
+# plot hasil buffer dengan warna yang dbuat transparan
+buffer_50.to_crs('EPSG:3857').plot(ax=ax, color='yellow', alpha=0.5)
+
+# Plot data jalan
+jalan_regol.to_crs('EPSG:3857').plot(ax=ax, edgecolor='red')
+
+# Tambahkan basemap
+cx.add_basemap(ax, source=cx.providers.CartoDB.Positron)
+
+# Tampilkan
+plt.show()
+
+
+********************************************************** WITHIN ******************************************************
+within adalah operasi geometri yang digunakan untuk memeriksa apakah suatu objek spasial 
+(misalnya, titik, garis, atau poligon) berada di dalam objek spasial lain. 
+Operasi ini sering digunakan untuk menentukan apakah suatu geometri (seperti bangunan) 
+berada di dalam batas administrasi atau area tertentu. Ada hal yang harus jadi perhatian 
+adalah objek pengecekan harus lah menjadi satu poligon yang solid(tidak terbagi-bagi), 
+untuk itu kita gunkaan fungsi .union_all()
+
+# Plot semua titik pendidikan
+pendidikan.plot(figsize=(8,8))
+
+# Kita coba ekstrak Kecamatan Regol, Kota Bandung
+regol = adm_bdg[adm_bdg['WADMKC']=='Regol']
+regol.plot(color='lightgreen', edgecolor='white')
+
+#plot hasil
+fig,ax= plt.subplots(figsize=(8, 8))
+regol.plot(ax=ax)
+pendidikan.plot(ax=ax, color='red')
+
+plt.show()
+
+# Coba operasi within
+pendidikan.within(regol.union_all())
+
+# Kita coba cek pendidikan yang termasuk di wilayah Kecamatan Regol
+# Buat kolom baru untuk menyimpan informasi apakah titik berada di Kecamatan Regol atau tidak
+pendidikan['Regol'] = pendidikan.within(regol.union_all())
+
+# Tampilkan hasil
+pendidikan.head()
+
+# Hitung jumlah False dan True
+pendidikan['Regol'].value_counts()
+
+# Visualisasi Hasil
+fig, ax = plt.subplots(figsize=(8, 8))
+
+# Plot data administrasi Bandung
+adm_bdg.plot(ax=ax, edgecolor=None, facecolor='#c6c6c6', alpha=0.5)
+
+# Highlight Kecamatan Regol
+adm_bdg[adm_bdg['WADMKC'] == 'Regol'].plot(ax=ax, edgecolor=None, facecolor='#ffc8c8')
+
+# Plot pendidikan di Kecamatan Regol
+pendidikan[pendidikan['Regol'] == True].plot(
+    ax=ax, label='Regol', color='red', marker='+')
+
+# Plot pendidikan di luar Kecamatan Regol
+pendidikan[pendidikan['Regol'] == False].plot(
+    ax=ax, label='Selain Regol', color='grey', markersize=5)
+
+# Tampilkan legenda dan batas y
+ax.legend(loc='lower right')
+
+plt.show()
