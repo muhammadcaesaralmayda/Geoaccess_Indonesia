@@ -1,0 +1,95 @@
+Langkah-langkah:
+
+Mendefinisikan wilayah menggunakan place_name.
+Mengunduh data jaringan jalan.
+Menggunakan OSMnx untuk menemukan koordinat fasilitas yang diinginkan (misalnya Sarinah dan RSUD Tarakan).
+Menemukan simpul terdekat dari jaringan jalan untuk kedua fasilitas tersebut.
+Mencari dan memvisualisasikan rute terpendek antara dua fasilitas.
+
+
+****************************************** MENENTUKAN WILAYAH DAN AMBIL JARINGAN JALAN ***************************************
+
+# Mengunduh jaringan jalan di wilayah Cicendo
+place_name = "Cicendo, Bandung City, Java, Indonesia"
+graph = ox.graph_from_place(place_name, network_type='drive')
+
+# Menampilkan peta jaringan jalan di wilayah tersebut
+ox.plot_graph(graph)
+
+
+****************************************** AMBIL DATA FASILITAS UMUM YANG DIINGINKAN ***************************************
+
+# Mengunduh data fasilitas umum di Cicendo (misalnya mall, rumah sakit)
+amenities = ox.features_from_place(place_name, tags={'amenity': True})
+
+# Menampilkan beberapa data fasilitas umum
+amenities[['name', 'amenity', 'geometry']].head()
+
+
+# Cek apa saja amenity (data titik)yang ada di wilayah analisa
+amenities_points = amenities[amenities.geom_type=='Point']
+amenities_points['amenity'].unique()
+
+
+# cek data hospital dan university
+amenities_points[amenities_points['amenity'].isin(['hospital', 'university'])][['amenity', 'name', 'geometry']]
+
+
+# Ekstrak koordinat dari kedua titik tersebut dari kolom geometry
+# misalkan kita ingin menganalisis jarak antara 'Universitas Nurtanio Bandung' dengan 'LPP Ariyanti'
+university_coord = (107.5814, -6.90559)
+lpp_coord = (107.59738, -6.9051)
+
+
+****************************************** MENENTUKAN SIMPUL TERDEKAT ***************************************
+
+# Menemukan simpul terdekat untuk kedua fasilitas tersebut
+university_node = ox.distance.nearest_nodes(graph, university_coord[0], university_coord[1])
+lpp_node = ox.distance.nearest_nodes(graph, lpp_coord[0], lpp_coord[1])
+print(f"Node terdekat Universitas Nurtanio Bandung: {university_node}")
+print(f"Node terdekat Universitas Ariyanti: {lpp_node}")
+
+# Kemudian, anda bisa cek kode ID Node tersebut dengan menggunakan link berikut https://www.openstreetmap.org/node/'diisi ID Node'
+
+
+****************************************** MENCARI RUTE TERPENDEK ***************************************
+Mencari Rute Terpendek Antara Dua Fasilitas Sekarang setelah kita mengetahui simpul 
+terdekat dari kedua fasilitas, kita bisa menggunakan OSMnx untuk menghitung rute terpendek 
+berdasarkan panjang jalan di antara kedua simpul tersebut.
+
+
+# Mencari rute terpendek
+route = ox.shortest_path(graph, lpp_node, university_node, weight='length')
+
+# Menampilkan rute terpendek
+ox.plot_graph_route(graph, route, route_linewidth=6, node_size=11, bgcolor='grey', edge_color='white')
+
+route #--------->  untuk cek ID Node/Simpul pada rute terpendek
+
+route_gdf = ox.routing.route_to_gdf(graph, route, weight="length")
+length = route_gdf["length"].sum()
+length
+
+
+# Konversi rute menjadi GeoDataFrame
+route_gdf = ox.graph_to_gdfs(graph, nodes=False, edges=True, node_geometry=False)
+route_edges = route_gdf.loc[[(u, v, key) for u, v, key in graph.edges(keys=True) if u in route and v in route]]
+route_gdf = route_edges.copy()
+route_gdf = route_gdf.reset_index()
+
+# Memilih kolom yang relevan
+route_gdf = route_gdf[['u', 'v', 'key', 'geometry']]
+route_gdf.plot()
+
+
+************** Keterangan:*********************
+
+- graph.edges(keys=True): Mengambil semua edges dari jaringan jalan dengan simpul awal (u), 
+simpul akhir (v), dan key (parameter tambahan untuk multiple edges).
+
+- u in route and v in route: Ini adalah cara untuk memilih edges yang simpulnya ada dalam rute 
+yang telah dihitung (menyaring hanya jalan yang dilalui oleh rute).
+
+- loc[]: Fungsi pandas ini digunakan untuk memfilter baris dalam GeoDataFrame berdasarkan kondisi yang kita berikan.
+
+- reset_index(): Mengatur ulang index untuk menghindari masalah dengan index lama yang mungkin tidak relevan lagi setelah filter.
