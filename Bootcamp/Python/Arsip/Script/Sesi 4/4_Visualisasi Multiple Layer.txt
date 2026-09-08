@@ -1,0 +1,45 @@
+************************************************* PLOT SEBARAN BANGUNAN ***********************************************************
+
+# Peta sebaran permukiman di Kota Bandung
+fig, ax = plt.subplots(figsize=(10, 10))  # Mengatur ukuran peta
+
+# Melakukan plotting
+permukiman.plot(ax=ax, edgecolor=None, facecolor='#c9ff4d')
+
+# Menambahkan judul
+ax.set_title("Peta Sebaran Permukiman", fontsize=15)
+
+# Menampilkan peta
+plt.show()
+
+************************************************* PLOT JARINGAN JALAN ***********************************************************
+
+# Peta jaringan jalan di Kota Bandung
+fig, ax = plt.subplots(figsize=(10, 10))  # Mengatur ukuran peta
+
+# Melakukan plotting
+jalan.plot(ax=ax,
+          edgecolor='#ef4c4c',
+          linewidth=0.25) #Kita tidak menggunakan facecolor pada data karena datanya adalah line
+
+# Menambahkan judul
+ax.set_title("Peta Jaringan Jalan", fontsize=15)
+
+# Menampilkan peta
+plt.show()
+
+************************************************* PLOT SEBARAN BANGUNAN DAN JARINGAN JALAN ***********************************************************
+
+fig, ax = plt.subplots(figsize=(10, 10))  # Mengatur ukuran peta
+
+# Melakukan plotting bangunan
+permukiman.plot(ax=ax, edgecolor=None, facecolor='#c9ff4d')
+
+# Melakukan plotting jalan
+jalan.plot(ax=ax, edgecolor='#ef4c4c', linewidth=0.5)
+
+# Menambahkan judul
+ax.set_title("Peta Sebaran Permukiman dan Jaringan Jalan", fontsize=15)
+
+# # Menampilkan peta
+plt.show()
