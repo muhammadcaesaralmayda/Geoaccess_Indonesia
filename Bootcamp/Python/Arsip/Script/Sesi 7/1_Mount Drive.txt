@@ -1,0 +1,28 @@
+import os
+from google.colab import drive
+drive.mount('/content/drive')
+
+# Menentukan lokasi penyimpanan lokasi yang kta inginkan
+loc = '/content/drive/MyDrive/Data Simulasi/Raster/'
+
+# Mengubah ke penyimpanan yang sudah kita deifinisikan sebelumnya
+os.chdir(loc)
+
+# Cek lokasi penyimpanan apakah sudah sesuai dengan yang sudah kita tenetukan
+print('Working Directory: ',os.getcwd())
+
+
+************************************ INSTALL LIBRARY YANG DIBUTUHKAN ******************************************
+
+!pip install rasterio
+!pip install rasterstats
+
+import rasterio
+from rasterio.plot import show
+
+import geopandas as gpd
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+from rasterstats import zonal_stats
