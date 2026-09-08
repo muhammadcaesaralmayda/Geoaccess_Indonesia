@@ -1,0 +1,129 @@
+Konsep loop dalam analisis data spasial memungkinkan pemrosesan data geospasial secara berulang dan 
+otomatis untuk setiap elemen dalam dataset, baik titik, garis, poligon, maupun atribut lainnya. 
+Dalam konteks spasial, loop sering digunakan untuk mengaplikasikan operasi tertentu, seperti buffering, 
+intersect, atau perhitungan jarak, pada banyak fitur geospasial. 
+
+
+********************************** CONTOH 1: MULTI-RING BUFFER **********************************
+
+######### Persiapan Data
+
+# Tentukan wilayah Makassar
+place_name = "Makassar, Sulawesi Selatan, Indonesia"
+
+# Unduh data fasilitas umum di Makassar, khususnya rumah sakit
+hospitals = ox.features_from_place(place_name, tags={'amenity': 'hospital'})
+
+# Filter data untuk mendapatkan hanya titik rumah sakit
+hospitals_points = hospitals[hospitals.geom_type == 'Point'].to_crs(epsg=32750).reset_index()
+
+# Tampilkan data rumah sakit
+hospitals_points[['name', 'amenity', 'geometry']].head()
+
+#kita dapat memvisualisasikan data rumah sakit dengan menggunakan:
+hospitals_points.plot(figsize=(8,8))
+
+
+######### Pembuatan Fungsi yang Menggunakan Looping
+
+# Fungsi untuk membuat multi-ring buffer tanpa tumpang tindih
+
+def multiringbuffer(df, nrings, ringdist):
+    """
+    Fungsi untuk membuat buffer multi-ring tanpa tumpang tindih.
+
+    Parameter:
+    df: GeoDataFrame yang berisi geometri (titik, garis, atau poligon) yang ingin diberi buffer.
+    nrings: Jumlah cincin buffer yang akan dibuat.
+    ringdist: Jarak antara setiap cincin buffer dalam satuan CRS (misalnya meter).
+
+    Fungsi ini akan menghasilkan daftar (list) buffer untuk setiap geometri,
+    di mana setiap cincin buffer tidak tumpang tindih dengan cincin yang lain.
+    """
+
+    rings = []  # List untuk menyimpan buffer individual
+
+    # Loop untuk setiap cincin (1, 2, 3, ..., nrings)
+    for ring in range(1, nrings + 1):
+
+        # Buat buffer besar (contoh: 100 meter untuk ring pertama, 200 meter untuk ring kedua, dst.)
+        bigring = df["geometry"].buffer(ringdist * ring)
+
+        # Buat buffer kecil yang digunakan untuk mengurangi buffer besar
+        smallring = df["geometry"].buffer(ringdist * (ring - 1))
+
+        # Kurangi buffer besar dengan buffer kecil untuk mendapatkan cincin tanpa bagian dalam
+        theonering = bigring.difference(smallring)
+
+        # Simpan buffer cincin ke dalam list 'rings'
+        rings.append(theonering)
+
+    return rings  # Kembalikan list yang berisi buffer cincin
+
+
+######### Penerapan
+
+# Tentukan jumlah cincin buffer dan jaraknya (dalam meter)
+nrings = 3  # Misalnya 3 ring
+ringdist = 500  # Jarak antar ring
+
+# Buat multi-ring buffer
+hospitals_points['multiring'] = hospitals_points.apply(lambda x: multiringbuffer(x, nrings, ringdist), axis=1)
+hospitals_points = hospitals_points.explode('multiring')
+hospitals_points = hospitals_points.set_geometry('multiring')
+hospitals_points = hospitals_points.drop(columns=['geometry']).rename_geometry('geometry').set_crs(epsg=32750)
+
+
+#Visualisasi
+fig, ax = plt.subplots(figsize=(10, 10))
+
+hospitals_points.plot(ax=ax, color='#f8a929', edgecolor='grey', alpha=0.2)
+hospitals[hospitals.geom_type == 'Point'].to_crs(hospitals_points.crs).plot(ax=ax, color='red')
+
+cx.add_basemap(ax, crs=hospitals_points.crs)
+
+ax.set_title('Multi Ring Buffer Rumah Sakit di Makassar')
+
+plt.show()
+
+
+*********************************** CONTOH 2: MENAMPILKAN PETA JALAN BEBERAPA KOTA *******************************************
+
+Jika kita ingin menampilkan jaringan jalan dari beberapa kota dalam satu figure tetapi dengan 
+sumbu (axes) yang berbeda untuk masing-masing kota, kita dapat menggunakan subplots dari matplotlib. 
+Dengan cara ini,kita bisa mengatur beberapa plot dalam satu figure.
+
+import osmnx as ox
+import matplotlib.pyplot as plt
+
+# Daftar nama kota yang akan ditampilkan jaringannya
+cities = ["Medan, Indonesia",
+          "Jakarta Pusat, Indonesia",
+          "Bukittinggi, Indonesia",
+          "Banjarmasin, Indonesia",
+          "Palu, Indonesia"]
+
+# Menentukan jumlah kota
+num_cities = len(cities)
+
+
+# Visualisasi dengan looping
+# Buat subplot dengan baris = jumlah kota dan kolom = 1
+fig, axes = plt.subplots(num_cities, 1, figsize=(60, 8))
+
+# Loop untuk mengunduh dan menampilkan jaringan jalan untuk setiap kota
+for ax, city in zip(axes, cities):
+    # Mengunduh data jaringan jalan untuk tipe jalan 'drive'
+    graph = ox.graph_from_place(city, network_type='drive')
+
+    # Menampilkan jaringan jalan
+    ox.plot_graph(graph, ax=ax, node_size=0, edge_linewidth=0.2, bgcolor='white', show=False)
+
+    # Set judul untuk setiap peta jaringan jalan
+    ax.set_title(f"Jaringan Jalan di {city}", fontsize=9)
+
+# Mengatur tata letak figure
+plt.tight_layout()
+
+# Menampilkan plot
+plt.show()
