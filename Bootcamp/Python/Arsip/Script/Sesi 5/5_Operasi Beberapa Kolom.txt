@@ -1,0 +1,41 @@
+Operasi beberapa kolom memungkinkan kita menghitung data kuantitatif berdasarkan nilai atribut tertentu, 
+seperti menghitung kepadatan penduduk berdasarkan jumlah penduduk dan luas area, berarti akan ada kalkulasi 
+matematika antara kolom junmlah penduduk dan luas area.
+
+
+adm_bdg.head()
+
+adm_bdg = adm_bdg.to_crs(epsg=32748)  # UTM Zona 48S
+
+-------------------------------------------------------------------------------------------
+# Menghitung kepadatan penduduk (penduduk per km2) untuk setiap kelurahan
+adm_bdg["luas"] = adm_bdg.geometry.area / 1e6  # Konversi ke km2
+adm_bdg["kepadatan_penduduk"] = adm_bdg["PENDUDUK"] / adm_bdg["luas"]
+
+# Menampilkan hasil
+adm_bdg.head()
+
+# Tampilkan peta
+fig, ax = plt.subplots(figsize=(10,10))
+
+adm_bdg.plot(ax=ax, column='kepadatan_penduduk', cmap='RdPu', edgecolor='white', linewidth=0.5, legend=True)
+
+ax.set_axis_off()
+
+ax.set_title('Kepadatan Penduduk Kota Bandung (Populasi/ Km2)', fontsize=14)
+
+plt.show()
+-------------------------------------------------------------------------------------------
+# Hitung luas per kelurahan (km2)
+adm_bdg["luas"] = adm_bdg.geometry.area / 1e6
+
+adm_kec = adm_bdg.groupby("WADMKC", as_index=False).agg({
+    "PENDUDUK": "first",
+    "luas": "sum"
+})
+
+# Hitung kepadatan per kecamatan
+adm_kec["kepadatan_penduduk"] = adm_kec["PENDUDUK"] / adm_kec["luas"]
+
+# Tampilkan hasil
+adm_kec.head(30)
