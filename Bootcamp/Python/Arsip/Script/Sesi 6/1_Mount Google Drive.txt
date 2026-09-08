@@ -1,0 +1,29 @@
+******************************** Mount ke Google Drive **********************************
+
+import os
+from google.colab import drive
+drive.mount('/content/drive')
+
+# Menentukan lokasi penyimpanan lokasi yang kta inginkan
+loc = '/content/drive/MyDrive/Data Simulasi/Shapefile/'
+
+# Mengubah ke penyimpanan yang sudah kita deifinisikan sebelumnya
+os.chdir(loc)
+
+# Cek lokasi penyimpanan apakah sudah sesuai dengan yang sudah kita tenetukan
+print('Working Directory: ',os.getcwd())
+
+******************************** Persiapan Library yang Dibutuhkan **********************************
+
+# Memanggil library yang dibutuhkan
+import geopandas as gpd
+import pandas as pd
+import matplotlib.pyplot as plt
+
+!pip install contextily
+import contextily as cx
+
+!apt install libspatialindex-dev #bertujuan untuk menginstal library libspatialindex beserta file-file yang dibutuhkan untuk pengembangan software yang menggunakan library tersebut.
+!pip install osmnx
+
+import osmnx as ox
