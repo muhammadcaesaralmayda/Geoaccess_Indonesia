@@ -1,0 +1,74 @@
+adm_bdg
+
+# Membuat visualisasi dasar peta Bandung
+adm_bdg.plot()
+
+#PENJELASAN ----------> adm_bdg.plot(): Fungsi bawaan dari GeoPandas yang menampilkan data spasial tanpa memerlukan kustomisasi tambahan.
+
+
+************************************************** MENAMPILKAN FIGURE DAN AXES **********************************************************
+
+
+import matplotlib.pyplot as plt
+
+fig = plt.figure(figsize=(10, 12))
+plt.show()
+
+
+#Figure di atas belum menampilkan apa-apa karena kita belum memasukkan axes. untuk itu, kita perlu menyematkan variabel axes (subplot)
+
+fig, ax = plt.subplots(figsize=(6, 6))
+plt.show()
+
+
+# Membuat contoh axes
+fig, ax = plt.subplots(nrows=2,
+                      ncols=4,
+                      figsize=(35, 5))
+plt.show()
+
+
+#Contoh memberikan judul
+fig, ax = plt.subplots(figsize=(10,10))
+ax.set_title('Contoh Judul', fontsize=8)
+
+#Contoh setting nilai min-max sumbu x dan ya
+ax.set_xlim(0.0, 2.0)
+ax.set_ylim(0.0, 2.0)
+
+plt.show()
+
+************************************************** MENAMPILKAN MULTIPLE AXES **********************************************************
+
+# Membuat 4 axes
+fig, ax = plt.subplots(nrows=2, ncols=2, figsize=(7,7))
+
+# Beri judul besar
+fig.suptitle('4 Axes', color='blue')
+
+# beri judul pasa masing-masing axes
+ax[0, 0].set_title('Axes 1', color='red')
+ax[0, 1].set_title('Axes 2')
+ax[1, 0].set_title('Axes 3')
+ax[1, 1].set_title('Axes 4')
+
+plt.show()
+
+************************************************** MENGUBAH SISTEM KOORDINAT **********************************************************
+
+# Cek CRS Setiap Data
+print(adm_bdg.crs)
+print(permukiman.crs)
+print(jalan.crs)
+print(pendidikan.crs)
+
+# Melakukan konversi proyeksi ke EPSG:32748
+adm_bdg = adm_bdg.to_crs(epsg=32748)
+permukiman = permukiman.to_crs(epsg=32748)
+jalan = jalan.to_crs(epsg=32748)
+pendidikan = pendidikan.to_crs(epsg=32748)
+
+# Cek CRS Data yang sudah dikonversi
+print(adm_bdg.crs)
+print(permukiman.crs)
+print(jalan.crs)
