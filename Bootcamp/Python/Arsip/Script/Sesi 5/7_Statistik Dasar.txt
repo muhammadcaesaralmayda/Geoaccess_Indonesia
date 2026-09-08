@@ -1,0 +1,20 @@
+Dalam Geopandas, kita bisa menghitung statistik deskriptif untuk atribut spasial, seperti luas, panjang, 
+dan atribut numerik lainnya. Misalnya, kita bisa menghitung statistik deskriptif dari kepadatan penduduk di wilayah Kota Bandung.
+
+
+adm_bdg.describe()
+
+
+# Kita juga bisa menampilkan distribusi dsata menggunakan histogram
+adm_bdg['kepadatan_penduduk'].plot(kind='hist', bins=20, title='Histogram Kepadatan Penduduk Kota Bandung', color='grey')
+plt.xlabel('Kepadatan Penduduk')
+plt.ylabel('Frequency')
+plt.show()
+
+
+
+
+*untuk analisis spasial lanjutan silakan dapat mengeksplor beberapa web berikut:
+https://geographicdata.science/book/notebooks/06_spatial_autocorrelation.html
+https://geographicdata.science/book/notebooks/07_local_autocorrelation.html
+https://geographicdata.science/book/notebooks/08_point_pattern_analysis.html
