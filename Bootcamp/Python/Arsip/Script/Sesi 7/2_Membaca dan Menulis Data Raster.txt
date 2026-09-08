@@ -1,0 +1,23 @@
+https://app.readthedocs.org/projects/rasterio/downloads/pdf/latest/    Rasterio Documentation
+
+
+********************************************** MEMBACA DATA RASTER *****************************************************
+
+# Membaca data raster
+l8 = rasterio.open('L8_2020_YOGYAKARTA.tif')
+
+# Cek tippe data l8
+type(l8)
+
+
+********************************************** MENULIS DATA RASTER *****************************************************
+
+with rasterio.open('output_raster.tif', 'w',
+                   driver='GTiff',
+                   height=l8.height,
+                   width=l8.width,
+                   count=1,
+                   dtype=rasterio.float32,
+                   crs=l8.crs,
+                   transform=l8.transform) as dst:
+    dst.write(l8.read(1), 1)
