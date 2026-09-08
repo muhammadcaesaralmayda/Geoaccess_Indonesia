@@ -1,0 +1,42 @@
+https://pythonhosted.org/rasterstats/
+
+
+!pip install rasterstats
+from rasterstats import zonal_stats
+
+
+# Baca Data Vektor sebagai zona
+zones = adm_yogya.copy()
+zones.plot(figsize= (10,10))
+
+
+zonal_stats_result = zonal_stats(zones, 'ndvi.tif', stats=['mean', 'max', 'min', 'sum', 'std', 'median'])
+zonal_stats_result
+
+
+# Jadikan hasil Zonal Statistics menjadi DataFrame
+zonal_stats_df = pd.DataFrame(zonal_stats_result)
+zonal_stats_df
+
+zones
+
+
+#Gabungkan hasil zonal statistics ke dalam GeoDataFrame administrasi Yogyakarta
+zones = zones.merge(zonal_stats_df, left_index=True, right_index=True)
+
+zones
+
+
+# Tampilkan Visualisasi Rata-Rata NDVI berdasarkan batas administrasi
+fig, ax = plt.subplots(figsize = (8,8))
+
+zones.plot(ax=ax,
+           column='mean',
+           cmap='RdYlGn',
+           legend=True,
+           edgecolor='w')
+
+ax.set_title('NDVI Rata-Rata di Kota Yogyakarta')
+ax.set_axis_off()
+
+plt.show()
