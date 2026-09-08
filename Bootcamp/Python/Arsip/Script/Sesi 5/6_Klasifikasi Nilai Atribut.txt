@@ -1,0 +1,31 @@
+Klasifikasi nilai atribut digunakan untuk membagi data spasial ke dalam beberapa kategori berdasarkan nilai numerik.
+
+
+# Fungsi untuk mengkategorikan kepadatan penduduk
+def klasifikasi_kepadatan(kepadatan):
+    if kepadatan < 10000:
+        return 'Rendah'
+    elif kepadatan < 20000:
+        return 'Sedang'
+    elif kepadatan < 30000:
+        return 'Agak Tinggi'
+    elif kepadatan < 40000:
+        return 'Tinggi'
+    else:
+        return 'Sangat Tinggi'
+
+
+# Menerapkan fungsi klasifikasi pada kolom kepadatan
+adm_bdg['kategori_kepadatan'] = adm_bdg['kepadatan_penduduk'].apply(klasifikasi_kepadatan)
+adm_bdg.head()
+
+# Tampilkan peta
+fig, ax = plt.subplots(figsize=(10,10))
+
+adm_bdg.plot(ax=ax, column='kategori_kepadatan', cmap='viridis', edgecolor='white', linewidth=0.5, legend=True)
+
+ax.set_axis_off()
+
+ax.set_title('Klasifikasi Kepadatan Penduduk Kota Bandung', fontsize=14)
+
+plt.show()
