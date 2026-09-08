@@ -1,0 +1,91 @@
+# Muat data poligon Administrasi Bandung
+adm_bdg = gpd.read_file('Bandung_DesaAdmin.shp')
+adm_bdg.plot(figsize=(10,10))
+
+adm_bdg.head()
+
+*********************************************************** CHOROPLETH 1 ***************************************************************
+
+import matplotlib.pyplot as plt
+
+# Membuat plot dasar dengan atribut penduduk
+fig, ax = plt.subplots(figsize=(10, 10))
+
+# Membuat Choropleth Map berdasarkan kolom PENDUDUK
+adm_bdg.plot(column='PENDUDUK',
+             ax=ax,
+             legend=False,
+             cmap='GnBu'  # Skema warna merah ungu
+            )
+
+# Menambahkan judul peta
+ax.set_title("Peta Jumlah Penduduk per Kecamatan di Kota Bandung", fontsize=15)
+
+# Menampilkan peta
+plt.show()
+
+*********************************************************** CHOROPLETH 2 ***************************************************************
+
+# Membuat plot dasar dengan atribut penduduk
+fig, ax = plt.subplots(1, 1, figsize=(12, 12))
+
+# Membuat Choropleth Map berdasarkan kolom PENDUDUK
+adm_bdg.plot(column='PENDUDUK', ax=ax, legend=True,
+             cmap='RdPu',  # Skema warna merah-oranye
+             edgecolor='white',  # Warna batas polygon
+             linewidth=0.5,  # Ketebalan garis batas
+             legend_kwds={'label': "Jumlah Penduduk",
+                          'orientation': "horizontal",  # Orientasi legenda horizontal
+                          'shrink': 0.6 # ukuran bar
+                          }
+            )
+
+# Tambahkan label angka penduduk di tengah polygon
+for idx, row in adm_bdg.iterrows():
+    ax.annotate(
+        text=row['PENDUDUK'],
+        xy=(row.geometry.centroid.x, row.geometry.centroid.y),
+        ha='center',
+        fontsize=8,
+        color='black'
+    )
+
+# Menambahkan judul peta
+ax.set_title("Peta Jumlah Penduduk per Kecamatan di Kota Bandung", fontsize=15, pad=20)
+
+# Mengatur tampilan peta
+ax.set_axis_off()  # Menghilangkan sumbu
+ax.set_xlabel('Longitude', fontsize=12)
+ax.set_ylabel('Latitude', fontsize=12)
+
+# Menampilkan peta
+plt.show()
+
+
+*********************************************************** VISUALISASI DATA KATEGORIKAL ***************************************************************
+
+# Membuat plot dasar dengan atribut Kecamatan
+fig, ax = plt.subplots(1, 1, figsize=(12, 12))
+
+# Membuat Choropleth Map berdasarkan kolom Kecamatan
+adm_bdg.plot(column='WADMKC', ax=ax, legend=True,
+             cmap='Set1',  # Skema warna kualitatif
+             edgecolor='white',  # Warna batas polygon
+             linewidth=0.5,  # Ketebalan garis batas
+             legend_kwds={'loc': 'center left',
+                          'bbox_to_anchor': (1, 0.5),
+                          'title': "Kota",
+                          'fontsize': 10
+                          }
+            )
+
+# Menambahkan judul peta
+ax.set_title("Peta Kecamatan di Kota Bandung", fontsize=15, pad=20)
+
+# Mengatur tampilan peta
+ax.set_axis_off()  # Menghilangkan sumbu
+ax.set_xlabel('Longitude', fontsize=12)
+ax.set_ylabel('Latitude', fontsize=12)
+
+# Menampilkan peta
+plt.show(
