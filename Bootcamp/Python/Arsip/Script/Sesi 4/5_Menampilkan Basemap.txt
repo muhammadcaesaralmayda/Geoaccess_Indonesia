@@ -1,0 +1,55 @@
+Untuk membuat basemap, kita bisa gunakan library Contextily. Contextily adalah salah satu library yang sering digunakan 
+untuk menaampilkan basemap. Karena Contextily tidak tersedia secara bawaan di Google Colab, kita perlu melakukan instalasi terlebih dahulu
+
+!pip install contextily
+
+#panggil library
+
+import contextily as cx
+
+********************************************************* MENAMBAHKAN BASEMAP **************************************************************
+
+# Peta sebaran Permukiman di Kota Bandung
+fig, ax = plt.subplots(figsize=(10, 10))  # Mengatur ukuran peta
+
+# Melakukan plotting bangunan dengan ditaambahkan reproyeksi ke Web Mercator
+permukiman.to_crs('epsg:3857').plot(ax=ax, edgecolor=None, facecolor='red')
+
+# Menambahkan judul
+ax.set_title("Peta Sebaran Permukiman", fontsize=15)
+
+# Tambahkan basemap
+cx.add_basemap(ax)
+
+# Menampilkan peta
+plt.show()
+
+********************************************************* CUSTOM BASEMAP **************************************************************
+Kita juga bisa menambahkan basemap dari sumber lain. Kita bisa cek provder apa saja 
+yang menyediakan basemap yang bisa diakses oleh Contextilyt menggunakan cx.providers.keys()
+
+#Cek provider
+cx.providers.keys()
+
+#Cek tile basemap Esri
+cx.providers.Esri.keys()
+
+#Cek tile basemap Esri
+cx.providers.OpenStreetMap.keys()
+
+##### CONTOH #####
+
+# Peta sebaran permukiman di Kota Bandung
+fig, ax = plt.subplots(figsize=(10, 10))  # Mengatur ukuran peta
+
+# Melakukan plotting bangunan dengan ditaambahkan reproyeksi ke Web Mercator
+permukiman.to_crs('epsg:3857').plot(ax=ax, edgecolor=None, facecolor='red')
+
+# Menambahkan judul
+ax.set_title("Peta Sebaran Permukiman", fontsize=15)
+
+# Tambahkan basemap WorldStreeMap dari Esri
+cx.add_basemap(ax, source=cx.providers.Esri.WorldTopoMap)
+
+# Menampilkan peta
+plt.show()
