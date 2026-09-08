@@ -1,0 +1,108 @@
+************************************************** CEK INFORMASI DATA RASTER *****************************************************
+
+# Informasi dasar tentang raster
+print(l8.name)        # Nama file
+print(l8.count)       # Jumlah band
+print(l8.width)       # Lebar raster (piksel)
+print(l8.height)      # Tinggi raster (piksel)
+print(l8.crs)         # Sistem referensi koordinat (CRS)
+
+
+# cek metadata keseluruhan raster
+l8.meta
+
+
+# Membaca informasi pada band tertentu
+l8.read(1)
+
+*************************************************** VISUALISASI SINGLEBAND ************************************************
+
+# Menampilkan data raster
+show((l8, 2))
+
+
+fig, (ax1, ax2, ax3) = plt.subplots(nrows=1, ncols=3, figsize=(12, 8))
+
+# Tampilkan per band
+show((l8, 4), ax=ax1, cmap='Reds', vmin=l8.read(4).min(), vmax=l8.read(4).max())
+show((l8, 3), ax=ax2, cmap='Greens', vmin=l8.read(3).min(), vmax=l8.read(3).max())
+show((l8, 2), ax=ax3, cmap='Blues', vmin=l8.read(2).min(), vmax=l8.read(2).max())
+
+# Tambahkan judul
+ax1.set_title('Red')
+ax2.set_title('Green')
+ax3.set_title('Blue')
+
+
+******************************************** VISUALISASI MULTIBAND/COMPOSITE ************************************************
+
+red = l8.read(4)
+green = l8.read(3)
+blue = l8.read(2)
+
+rgb = np.stack((red, green, blue))
+show(rgb)
+
+
+#untuk melihat nilai min-max
+red.min(), red.max()
+
+
+******************************************** NORMALISASI RENTANG NILAI PIKSEL **********************************************
+
+# Buat fungsi untuk melakukan Normalisasi
+def normalize(array):
+    array_min, array_max = array.min(), array.max()
+    return ((array - array_min)/(array_max - array_min))
+
+# (x - max)/(max-min)
+
+# Normalisasi band
+red_n = normalize(red)
+green_n = normalize(green)
+blue_n = normalize(blue)
+
+# Gabungkan jadi RGB rgb
+rgb = np.dstack((red_n, green_n, blue_n))
+
+# Tampilkan RGB
+plt.imshow(rgb)
+
+
+#Cek nilai min-max 
+red_n.min(), red_n.max()
+
+******************************************** VISUALISASI FALSE COLOR/WARNA SEMU **********************************************
+
+# False Color Composite
+nir  = l8.read(5)
+red  = l8.read(4)
+green= l8.read(3)
+
+# normalisasi nilai
+nir_n = normalize(nir)
+red_n = normalize(red)
+green_n = normalize(green)
+
+# Gabungkan jadi RGB
+nrg = np.dstack((nir_n, red_n, green_n))
+
+# Tampilkan RGB
+plt.imshow(nrg)
+
+
+******************************************** ENHANCED **********************************************
+def enhance(band):
+    p2, p98 = np.percentile(band, (2, 98))
+    return np.clip((band - p2) / (p98 - p2), 0, 1)
+
+red = enhance(red)
+green = enhance(green)
+blue = enhance(blue)
+
+rgb_enhanced = np.dstack((red, green, blue))
+
+plt.imshow(rgb_enhanced)
+plt.title("Enhanced RGB per Band")
+plt.axis("off")
+plt.show()
