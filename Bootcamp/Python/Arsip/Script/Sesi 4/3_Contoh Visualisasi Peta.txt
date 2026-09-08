@@ -1,0 +1,58 @@
+************************************************** CONTOH PENERAPAN 1 **********************************************************
+
+# Membuat peta dengan warna dan menambahkan judul
+fig, ax = plt.subplots(figsize=(6, 6))  # Mengatur ukuran peta
+
+# Melakukan plotting
+adm_bdg.plot(ax=ax,
+             edgecolor='black',
+             facecolor='gold')
+
+# Menambahkan judul
+ax.set_title("Peta Administrasi Kota Bandung", fontsize=15)
+
+#menambahkan grid
+ax.grid(True)
+
+# Menampilkan peta
+plt.show()
+
+
+************************************************** CONTOH PENERAPAN 2 **********************************************************
+
+# Menampilkan peta dengan latar belakang gelap
+
+# Membuat peta dengan warna dan menambahkan judul
+fig, ax = plt.subplots(figsize=(10, 10))  # Mengatur ukuran peta
+
+# Melakukan plotting
+adm_bdg.plot(ax=ax, edgecolor='#222222', facecolor='#fff44d')
+
+# Menambahkan judul
+ax.set_title("Peta Administrasi Kota Bandung", fontsize=15, color='black')
+
+# Mengatur latar belakang peta menjadi gelap
+ax.set_facecolor('#222222')
+
+# Menampilkan peta
+plt.show()
+
+
+************************************************** CONTOH PENERAPAN 3 **********************************************************
+
+# Membuat peta pada dua axes
+
+# Membuat peta dengan warna dan menambahkan judul
+fig, ax = plt.subplots(1, 2, figsize=(15, 10))  # Mengatur ukuran peta
+
+# Peta terang
+adm_bdg.plot(ax=ax[0], edgecolor='black', facecolor='lightblue')
+ax[0].set_title("Peta Administrasi Kota Bandung (Terang)", fontsize=15)
+
+# Peta gelap
+adm_bdg.plot(ax=ax[1], edgecolor='#222222', facecolor='white')
+ax[1].set_title("Peta Administrasi Kota Bandung (Gelap)", fontsize=15)
+ax[1].set_facecolor('#222222')
+
+# Menampilkan peta
+plt.show()
