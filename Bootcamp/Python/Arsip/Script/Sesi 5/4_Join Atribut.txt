@@ -1,0 +1,45 @@
+Data spasial yang disimpan dalam GeoDataFrame sering kali perlu digabungkan dengan data tabular yang 
+tersimpan dalam format lain, seperti DataFrame dari Pandas atau file CSV. Penggabungan ini penting 
+untuk menambah informasi atribut pada objek spasial, misalnya menambahkan data populasi ke dataset spasial wilayah administrasi.
+
+Data spasial yang tersimpan dalam GeoDataFrame dapat di-merge (digabungkan) dengan data tabular yang tersimpan dalam DataFrame 
+atau CSV. Proses penggabungan ini mirip dengan join dalam database atau penggabungan di Pandas. Agar penggabungan berhasil, data 
+spasial dan data tabular harus memiliki kolom kunci yang sama, misalnya kolom "ID" yang terdapat di kedua dataset.
+
+CONTOH:
+Menggabungkan data jumlah sekolah per kelurahan di Jakarta (sumber data dari olahan data yang didapat dari OpenStreetMap, 
+ada keungkinan data tidak lengkap) ke shapefile Batas Administrasi Jakarta dengan kolom kunci adalah id kelurahan ('KDEPUM')
+
+
+# Cek tabel atribut adm_bdg
+# Karena adm_jkt tadi kita sudah edit, maka kita coba panggil lagi data aslinya
+adm_bdg = gpd.read_file('Bandung_DesaAdmin.shp')
+adm_bdg.head()
+
+
+# Cek tabel kesehatan
+kesehatan.head()
+
+
+# Gabungkan data ju0litas kesehatan Kota Bandung menggunakan fungsi .merge()
+adm_bdg_merge = adm_bdg.merge(kesehatan, on='KDEPUM')
+adm_bdg_merge.head( )
+
+
+# Tampilkan peta
+fig, ax = plt.subplots(figsize=(10,10))
+
+adm_bdg_merge.plot(
+    ax=ax,
+    column='Jmlh_fasilitas_kesehatan',
+    cmap='YlOrBr',
+    edgecolor='black',
+    linewidth=0.5,
+    legend=True
+)
+
+ax.set_axis_off()
+
+ax.set_title('Jumlah Fasilitas Kesehatan Kota Bandung', fontsize=14)
+
+plt.show()
