@@ -1,0 +1,45 @@
+******************************************************* MOUNT GOOGLE DRIVE *********************************************************
+
+import os
+from google.colab import drive
+drive.mount('/content/drive')
+
+# Menentukan lokasi penyimpanan lokasi yang kta inginkan
+loc = '/content/drive/MyDrive/Data Simulasi/Shapefile/'
+
+# Mengubah ke penyimpanan yang sudah kita deifinisikan sebelumnya
+os.chdir(loc)
+
+# Cek lokasi penyimpanan apakah sudah sesuai dengan yang sudah kita tenetukan
+print('Working Directory: ',os.getcwd())
+
+******************************************************* PERSIAPAN LIBRARY *********************************************************
+
+# Memanggil library yang dibutuhkan
+import geopandas as gpd
+import pandas as pd
+import matplotlib.pyplot as plt
+
+!pip install contextily
+import contextily as cx
+
+******************************************************* DATA PREPARATION *********************************************************
+
+import geopandas as gpd
+
+# Membaca file Shapefile
+adm_bdg = gpd.read_file("Bandung_DesaAdmin.shp") # data poligon sebagai batas administrasi
+permukiman = gpd.read_file("PEMUKIMAN_AR_25K.shp") # data poligon
+jalan = gpd.read_file("Jalan.shp") # data garis
+jalan_regol = gpd.read_file("Jalan_Regol.shp") # data garis
+pendidikan = gpd.read_file("PENDIDIKAN_PT_25K.shp") # data titik
+
+# Lakukan reproyeksi mengikuti adm_bdg karena proyeksinya UTM
+adm_bdg = adm_bdg.to_crs(adm_bdg.crs)
+permukiman = permukiman.to_crs(adm_bdg.crs)
+jalan = jalan.to_crs(adm_bdg.crs)
+jalan_regol = jalan_regol.to_crs(adm_bdg.crs)
+pendidikan = pendidikan.to_crs(adm_bdg.crs)
+
+# Membaca data tabular berupa csv
+kesehatan = pd.read_csv("Fasilitas_Kesehatan.csv")
