@@ -1,0 +1,58 @@
+Dalam analisis data spasial, otomasi sangat penting untuk menghemat waktu 
+dan mempermudah pekerjaan yang sering diulang. Python memungkinkankita 
+membuat fungsi (function) untuk mengotomasi berbagai tugas
+
+
+
+******************************************* PENERAPAN FUNGSI OTOMASI ********************************************
+
+Fungsi untuk Mencari Rute Terdekat dengan Hanya Mendefinisikan Nama Kota, Nama Tujuan, dan Koordinat Asal
+
+########## Buat Fungsi
+
+def nearest_route(city_name, destination, start_coords):
+  # Unduh jaringan jalan
+  graph = ox.graph_from_place(city_name, network_type='drive')
+
+  # Geocode lokasi tujuan
+  destination_point = ox.geocode(destination + ", " + city_name)
+
+  # Temukan node terdekat dari titik awal
+  start_node = ox.nearest_nodes(graph, start_coords[1], start_coords[0])
+
+  # Temukan node terdekat dari lokasi pusat perbelanjaan
+  destination_node = ox.nearest_nodes(graph, destination_point[1], destination_point[0])
+
+  # Hitung rute terpendek
+  route = ox.shortest_path(graph, start_node, destination_node, weight='length')
+
+  import networkx as nx
+  length = nx.path_weight(graph, route, weight="length")
+
+  print("Panjang rute (meter):", length)
+  print("Panjang rute (km):", length / 1000)
+
+
+  # Menampilkan rute terpendek
+  map = ox.plot_graph_route(graph, route, route_linewidth=6, node_size=0, bgcolor='white', edge_color='#333333')
+
+  return map
+
+
+######## Penerapan Fungsi 1
+
+city_name = 'Medan Baru, Kota Medan'
+destination = 'Universitas Sumatera Utara'
+start_coords = (3.577108653127026, 98.65950489839054)
+
+tp_usu = nearest_route(city_name, destination, start_coords)
+tp_usu
+
+######## Penerapan Fungsi 2
+
+city_name = 'Depok, Sleman Regency, Special Region of Yogyakarta, Java, Indonesia'
+destination = 'Universitas Negeri Yogyakarta'
+start_coords = (-7.76203, 110.41204)
+
+rute_uny = nearest_route(city_name, destination, start_coords)
+rute_uny
