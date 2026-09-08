@@ -1,0 +1,29 @@
+from google.colab import output
+output.enable_custom_widget_manager()
+
+!pip install leafmap
+
+from leafmap import leafmap
+import geopandas as gpd
+
+!pip install ipysheet
+import ipysheet
+
+!pip install mapclassify
+
+# Mendapatkan bounds dari GeoDataFrame (adm_jkt)
+bounds = adm_bdg.to_crs('EPSG:4326').total_bounds  # [minx, miny, maxx, maxy]
+
+# Menghitung center dari bounding box
+center = [(bounds[1] + bounds[3]) / 2, (bounds[0] + bounds[2]) / 2]
+
+m = leafmap.Map(center=center, zoom=11)
+m.add_data(
+    adm_bdg,
+    column="PENDUDUK",
+    scheme="Quantiles",
+    cmap="RdPu",
+    legend_title="Population",
+    style={"color": "white", "weight": 2, "fillOpacity": 0.7},  # Mengubah warna outline menjadi putih dan tebal garis 2
+)
+m
