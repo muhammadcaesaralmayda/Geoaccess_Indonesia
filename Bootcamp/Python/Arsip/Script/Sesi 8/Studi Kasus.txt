@@ -1,0 +1,290 @@
+ANALISIS PERUBAHAN TUTUPAN LAHAN
+
+*********************************************** MOUNT GOOGLE DRIVE ******************************************************
+
+import os
+from google.colab import drive
+drive.mount('/content/drive')
+
+# Menentukan lokasi penyimpanan lokasi yang kta inginkan
+loc = '/content/drive/MyDrive/Data Simulasi/Landcover/'
+
+# Mengubah ke penyimpanan yang sudah kita deifinisikan sebelumnya
+os.chdir(loc)
+
+# Cek lokasi penyimpanan apakah sudah sesuai dengan0 yang sudah kita tenetukan
+print('Working Directory: ',os.getcwd())
+
+
+*********************************************** PERSIAPAN LIBRARY ******************************************************
+import geopandas as gpd
+import pandas as pd
+import matplotlib.pyplot as plt
+
+!pip install contextily
+import contextily as cx
+
+*********************************************** PERSIAPAN DATA ******************************************************
+# Panggil data batas administrasi provinsi DIY
+adm_diy = gpd.read_file('DIY_DesaAdmin.shp')
+adm_diy.head()
+
+print(adm_diy.crs)
+
+adm_diy = adm_diy.to_crs(epsg=32749)
+
+# Cek Nilai Unik untuk mengetahui kabupaten apa saja yang terdapat di data adm_diy
+adm_diy['WADMKK'].unique()
+
+# Coba tampilkan data sebagai plot
+adm_diy.plot(figsize=(10,10))
+
+# Lakukan filter untuk kabupaten Bantul (kita fokuskan ke salah satu Kabupatennya saja)
+bantul = adm_diy[adm_diy['WADMKK']=='Bantul']
+bantul
+
+# Muat data tutupan lahan tahun 2017 dan 2025
+tl_2017 = gpd.read_file('PL_DIY_2017.shp')
+tl_2025 = gpd.read_file('PL_DIY_2025.shp')
+
+tl_2017 = tl_2017.to_crs(epsg=32749)
+tl_2025 = tl_2025.to_crs(epsg=32749)
+
+# Cek isi data tutupan lahannya
+display(tl_2017.head())
+display(tl_2025.head())
+
+# Cek nilai unik kolom tutupan lahan
+tl_2017['PL'].unique()
+
+# Plot adm_diy dengan warna yang berbeda setiap kabupatennya
+fig, ax = plt.subplots(figsize=(10,10))
+adm_diy.plot(ax=ax, column='WADMKK', cmap='Set1', legend=True)
+plt.title('Batas Administrasi Provinsi Daerah Istimewa Yogyakarta')
+plt.show()
+
+# Plot tutupan lahan 2017 dan 2025
+fig, ax = plt.subplots(1,2,figsize=(20,10))
+
+tl_2017.plot(ax=ax[0], column='PL', cmap='RdYlGn_r')
+tl_2025.plot(ax=ax[1], column='PL', cmap='RdYlGn_r')
+
+ax[0].set_title('2017')
+ax[1].set_title('2025')
+
+plt.show()
+
+*********************************************** PEMOTONGAN DATA TUTUPAN LAHAN SESUAI WILAYAH KAB. BANTUL ******************************************************
+
+# Clip data tutupan lahan 2017 dan 2025 sesuai batas administrasi Kabupaten Bantul
+tl_bantul_2017 = gpd.clip(tl_2017, bantul)
+tl_bantul_2025 = gpd.clip(tl_2025, bantul)
+
+# Visualisasikan hasil pemotongan
+fig, ax = plt.subplots(1,2,figsize=(20,10))
+
+tl_bantul_2017.plot(ax=ax[0], column='PL', cmap='RdYlBu_r')
+tl_bantul_2025.plot(ax=ax[1], column='PL', cmap='RdYlBu_r')
+
+ax[0].set_title('Tutupan Lahan Kab. Bantul 2017', fontsize=20)
+ax[1].set_title('Tutupan Lahan Kab. Bantul 2025', fontsize=20)
+
+plt.show()
+
+# Cek nilai unik tutupan lahan
+tl_bantul_2017['PL'].unique()
+
+tl_bantul_2025['PL'].unique()
+
+*********************************************** VISUALISASI DATA TUTUPAN LAHAN ******************************************************
+
+# Pemetaan kelas tutupan lahan ke warna (menggunakan nama kelas sebagai key)
+class_color_mapping = {
+    'Vegetasi': '#05450a',   # Vegetasi
+    'Semak belukar': '#b6ff05',  # Vegetasi Tidak Berkayu
+    'Lahan terbangun': '#a5a5a5',  # Lahan Perkotaan
+    'Pertanian': '#ff6d4c',  # Mosaik Pertanian/Vegetasi
+    'Tubuh air': '#1c0dff'  # Badan Air
+}
+-------------------------------------------------------------------------------
+import random
+
+# daftar kelas tutupan lahan
+classes = [
+    'Vegetasi',
+    'Semak belukar',
+    'Lahan terbangun',
+    'Pertanian',
+    'Tubuh air'
+]
+
+# fungsi pembuat warna random HEX
+def random_color():
+    return "#{:06x}".format(random.randint(0, 0xFFFFFF))
+
+# mapping otomatis
+class_color_mapping = {cls: random_color() for cls in classes}
+
+# lihat hasilnya
+class_color_mapping
+
+-------------------------------------------------------------------------------
+# Nama kelas tutupan lahan untuk legend
+labels = list(class_color_mapping.keys())
+
+# Fungsi untuk mapping warna berdasarkan nama kelas
+def map_colors(value):
+    return class_color_mapping.get(value, '#ffffff')  # Default ke warna putih jika kelas tidak ada
+
+# Menambahkan kolom warna ke data geospasial berdasarkan nama kelas
+tl_bantul_2017['color'] = tl_bantul_2017['PL'].map(map_colors)
+tl_bantul_2025['color'] = tl_bantul_2025['PL'].map(map_colors)
+
+tl_bantul_2017
+tl_bantul_2025
+
+
+# Plot peta dengan warna yang sudah dikontrol
+fig, ax = plt.subplots(1, 2, figsize=(20, 10))
+
+# Plotkan data 2017 dan 2025 dengan warna manual dari kolom warna
+tl_bantul_2017.plot(ax=ax[0], color=tl_bantul_2017['color'], legend=False)
+tl_bantul_2025.plot(ax=ax[1], color=tl_bantul_2025['color'], legend=False)
+
+# Set judul peta
+ax[0].set_title('Tutupan Lahan Kab. Bantul 2017', fontsize=20)
+ax[1].set_title('Tutupan Lahan Kab. Bantul 2025', fontsize=20)
+
+# Tambahkan basemap dari CartoDB Positron
+cx.add_basemap(ax[0], crs=tl_bantul_2017.crs.to_string(), source=cx.providers.CartoDB.Positron)
+cx.add_basemap(ax[1], crs=tl_bantul_2025.crs.to_string(), source=cx.providers.CartoDB.Positron)
+
+# Menambahkan legenda manual
+handles = [plt.Line2D([0], [0], marker='o', color=color, markersize=10, label=label)
+           for label, color in class_color_mapping.items()]
+
+# Tambahkan legenda di luar plot (misalnya di sebelah kanan)
+fig.legend(handles=handles, loc='center right', title="Kelas Tutupan Lahan", fontsize=10, title_fontsize=12, bbox_to_anchor=(1.12, 0.5))
+
+# Tampilkan plot tanpa overlapping
+plt.tight_layout(rect=[0, 0, 0.95, 1])  # adjust the layout to make space for the legend
+plt.show()
+
+#marker=https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.plot.html 
+
+
+*********************************************** INTERSECT TUTUPAN LAHAN ******************************************************
+
+tl_bantul_intersect = gpd.overlay(tl_bantul_2017, tl_bantul_2025, how='intersection', keep_geom_type=True)
+
+tl_bantul_intersect.head()
+
+
+tl_bantul_intersect = tl_bantul_intersect.rename(columns={
+    'PL_1': 'PL_2017',
+    'PL_2': 'PL_2025'
+})
+
+tl_bantul_intersect.head()
+
+
+*********************************************** PERHITUNGAN LUAS TUTUPAN LAHAN ******************************************************
+
+# Lakukan perhitungan luas dalam satuan hektar
+tl_bantul_intersect['Luas_Ha'] = tl_bantul_intersect.area / 10000
+tl_bantul_intersect.head()
+
+
+*********************************************** AGREGASI ******************************************************
+
+# Agregasi untuk menghitung luas tutupan lahan per kelas tutupan lahan
+tl_bantul_2017_total = tl_bantul_intersect.groupby('PL_2017').agg({'Luas_Ha': 'sum'}).reset_index()
+tl_bantul_2025_total = tl_bantul_intersect.groupby('PL_2025').agg({'Luas_Ha': 'sum'}).reset_index()
+
+# Hitung persentase luas
+tl_bantul_2017_total['Luas_%'] = tl_bantul_2017_total['Luas_Ha'] / tl_bantul_2017_total['Luas_Ha'].sum() *100
+tl_bantul_2025_total['Luas_%'] = tl_bantul_2025_total['Luas_Ha'] / tl_bantul_2025_total['Luas_Ha'].sum() *100
+
+display(
+    tl_bantul_2017_total,
+    tl_bantul_2025_total
+)
+
+
+*********************************************** MERGE ******************************************************
+
+# Gabungkan data 2017 dan 2025 dengan fungsi merge
+tl_bantul_change = pd.merge(tl_bantul_2017_total, tl_bantul_2025_total, left_on='PL_2017', right_on='PL_2025', how='left')
+
+tl_bantul_change
+
+
+# Ubah nama kolom untuk mempermudah
+tl_bantul_change = tl_bantul_change.rename(columns={'Luas_Ha_x': 'Luas_2017', 'Luas_Ha_y': 'Luas_2025'})
+
+# Tampilkan perubahan luas kelas yang sama
+print("Perubahan Luas pada Kelas yang Sama (2017 - 2025):")
+display(tl_bantul_change)
+
+
+# Mengambil salah satu kolom untuk keterangan kelas
+tl_bantul_change.drop(columns=['PL_2017'], inplace=True)
+tl_bantul_change.rename(columns={'PL_2025': 'Kelas'}, inplace=True)
+tl_bantul_change
+
+
+*********************************************** PERHITUNGAN PERUBAHAN LUAS TUTUPAN LAHAN ******************************************************
+
+# Hitung perubahan luas tutupan lahan
+tl_bantul_change['Perubahan_Luas'] = tl_bantul_change['Luas_2025'] - tl_bantul_change['Luas_2017']
+tl_bantul_change
+
+
+*********************************************** MELIHAT SEBARAN TUTUPAN LAHAN VEGETASI/HUTAN DI 2017 DAN 2025 ******************************************************
+
+vegetasi = tl_bantul_intersect[(tl_bantul_intersect['PL_2025']=='Vegetasi') | (tl_bantul_intersect['PL_2017']=='Vegetasi')]
+
+display(
+    vegetasi.head(),
+    vegetasi.plot(figsize=(8,8)) #Menamppilkan vegetasi/hutan di kedua tahun
+)
+
+# Buat fungsi untuk memberi keterangan perubahan vegetasi
+def perubahan_vegetasi(row):
+  if row['PL_2017']=='Vegetasi' and row['PL_2025']=='Vegetasi':
+    return 'Vegetasi Tidak Berubah'
+  elif row['PL_2017']=='Vegetasi' and row['PL_2025']!='Vegetasi':
+    return 'Vegetasi Berkurang'
+  else:
+    return 'Vegetasi Bertambah'
+
+
+# Tambahkan atribut yang menunjukkan vegetasi bertambah dan berkurang
+vegetasi['Perubahan_Vegetasi'] = vegetasi.apply(perubahan_vegetasi, axis=1)
+vegetasi
+
+
+# Hitung luasan perubahan hutan
+perubahan_luas_vegetasi = vegetasi.groupby('Perubahan_Vegetasi').agg({'Luas_Ha': 'sum'}).reset_index()
+perubahan_luas_vegetasi
+
+
+# Tampilkan peta dinamika perubahan luasan hutan (bertambah dan berkurang)
+fig, ax = plt.subplots(figsize=(8, 8))
+
+vegetasi.plot(
+    ax=ax,
+    column='Perubahan_Vegetasi',
+    cmap='Set2',
+    categorical=True,
+    legend=True,
+    legend_kwds={
+        'loc': 'lower right',
+        'fontsize': 8
+    }
+)
+
+plt.title('Dinamika Tutupan Vegetasi/Hutan Kab. Bantul (2017-2025)', fontsize= 10)
+cx.add_basemap(ax, crs=vegetasi.crs.to_string(), source=cx.providers.CartoDB.Positron)
+
+plt.show()
