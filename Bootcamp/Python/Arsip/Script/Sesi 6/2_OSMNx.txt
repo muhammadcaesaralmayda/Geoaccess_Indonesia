@@ -1,0 +1,87 @@
+# Mendefinisikan wilayah untuk unduh data jalan (misalnya Bandung)
+place_name = "Cicendo, Bandung City, Java, Indonesia"
+
+********************************************** MENGAMBIL DATA DENGAN OSMNX ***********************************************
+
+####### MENGAMBIL DATA POLYGON
+
+# Mengambil data bangunan komersil dan supermarket  di Kecamatan Cicendo
+buildings = ox.features_from_place(place_name, tags={'building': ['commercial', 'supermarket']})
+
+# Menampilkan beberapa kolom penting dari data bangunan
+buildings[['name', 'building', 'geometry']].head()
+
+
+# Mengambil data bangunan di Kecamatan Cicendo
+buildings = ox.features_from_place(place_name, tags={'building': True})
+
+# Menampilkan beberapa kolom penting dari data bangunan
+buildings[['name', 'building', 'geometry']].head()
+
+
+#Untuk mengetahui banyak data
+buildings.shape
+
+#Untuk menampilkan data
+buildings.plot()
+
+
+####### MENGAMBIL DATA GARIS
+
+# Khusus untuk jalan (graph), terdapat dua output secara bersamaan, yaitu data edges berupa jalan dan titik berupa node (titik simpul)
+
+# Mengambil data jaringan jalan (garis)
+graph = ox.graph_from_place(place_name, network_type='bike')
+
+
+# Visualisasi jaringan jalan
+ox.plot_graph(graph)
+
+
+#  Konversi ke GeoDataFrame
+nodes, edges = ox.graph_to_gdfs(graph)
+
+display(
+'Nodes:', nodes.head(), nodes.plot(figsize=(8,8)),
+'Edges:', edges.head(), edges.plot(figsize=(8,8), linewidth=0.2)
+)
+
+
+# Mengambil data sungai
+rivers = ox.features_from_place(place_name, tags={'waterway': 'river'})
+
+# Menampilkan data sungai
+rivers[['name', 'waterway', 'geometry']].head()
+
+rivers.plot(figsize=(5,5))
+
+
+
+######### MENGAMBIL DATA TITIK
+
+# Mengambil data fasilitas umum (titik) di Bandung
+amenities = ox.features_from_place(place_name, tags={'amenity': ['school', 'hospital', 'cafe', 'bus_station']})
+
+# Menampilkan data fasilitas umum
+amenities[['name', 'amenity', 'geometry']].head()
+
+amenities.plot(figsize=(8,8), column='amenity', legend=True)
+
+
+
+######## MEMISAHKAN TIPE GEOMETRI
+
+# Cek tipe geometri yang ada pada variabel amenities
+amenities.geom_type.unique()
+
+
+# Memisahkan Poligon
+amenities_ar = amenities[amenities.geom_type == 'Polygon']
+
+# Memisahkan Titik
+amenities_pt = amenities[amenities.geom_type == 'Point']
+
+display(
+    'Poligon:', amenities_ar.head(), amenities_ar.plot(figsize=(8,8)),
+    'Titik:', amenities_pt.head(), amenities_pt.plot(figsize=(8,8))
+)
