@@ -1,0 +1,25 @@
+# Buka data raster yang sudah kita simpan di atas
+l8_clip = rasterio.open('l8_clip.tif')
+
+
+# Membuat Peta Normalized Difference Vegetation Index (NDVI)
+# Hitung NDVI
+ndvi = (l8_clip.read(5) - l8_clip.read(4)) / (l8_clip.read(5) + l8_clip.read(4))
+
+# Simpan raster NDVI
+with rasterio.open('ndvi.tif', 'w', **l8_clip_meta) as dst:
+    dst.write(ndvi, 1)
+
+
+# Visualisasi NDVI
+
+ndvi = rasterio.open('ndvi.tif')
+
+plt.figure(figsize=(8, 8))
+plt.axis('off')
+
+plt.imshow(ndvi.read(1), cmap='Greens')
+plt.title('NDVI')
+plt.colorbar()
+
+plt.show()
