@@ -1,0 +1,50 @@
+# Import data SRTM Yogyakarta
+dem = rasterio.open('SRTM_YOGYAKARTA.tif')
+
+# Cek metadata
+dem.meta
+
+# Visualisasi data DEM
+plt.imshow(dem.read(1), cmap='terrain')
+plt.colorbar()
+plt.show()
+
+
+
+************************************************** ANALISIS SLOPE/KEMIRINGAN LERENG *************************************************
+https://www.whiteboxgeo.com/manual/wbw-user-manual/book/tool_help.html
+https://www.whiteboxgeo.com/manual/wbw-user-manual/book/tool_help.html?highlight=slope#slope
+
+
+
+!pip install whitebox  #library untuk analisis data DEM, alternatif lain selain library richDEM
+import whitebox
+
+# Inisialisasi WhiteboxTools
+wbt = whitebox.WhiteboxTools()
+wbt.work_dir = '/content/drive/MyDrive/Data Simulasi/Raster/'  # Gunakan direktori kerja saat ini
+wbt.verbose = False  # Non-Aktifkan Tampilkan proses
+
+# File input dan output
+input_dem = 'SRTM_YOGYAKARTA.tif'
+output_slope = 'slope.tif'
+
+# Hitung slope (%)
+wbt.slope(
+    dem=input_dem,
+    output=output_slope,
+    zfactor=1.0,
+    units='percent'
+)
+
+# Baca hasil slope
+with rasterio.open(output_slope) as src:
+    slope = src.read(1)
+
+# Tampilkan slope
+plt.figure(figsize=(10, 8))
+plt.imshow(slope, cmap='magma')
+plt.colorbar(label='Slope (%)')
+plt.title('Kemiringan Lereng')
+plt.axis('off')
+plt.show()
