@@ -1,0 +1,51 @@
+//************************ Load Image Multiband ************************
+
+// Load Citra (Ambil citra pertama dari koleksi hasil filter)
+var s2RGB = ee.Image('COPERNICUS/S2_SR_HARMONIZED/20190510T022331_20190510T022735_T50LPR')
+
+  // Pilih Band RGB
+  .select(['B4', 'B3', 'B2'])
+
+  // Faktor Skala Band (jika ingin diskalakan, bisa sesuaikan)
+  .multiply(0.0001)
+  
+  .clip(aoi);  
+
+// Parameter Visualisasi RGB
+var rgb_param = {
+  min: 0,
+  max: 0.2
+};
+
+// Menampilkan Citra RGB pada Layer Peta
+Map.addLayer(s2RGB, rgb_param, 'Visualisasi RGB');
+
+// Zoom ke AOI
+Map.centerObject(aoi, 10);
+
+
+//************************ Load Image Singleband ************************
+
+// Load Citra Band NIR (B8)
+var s2single = ee.Image('COPERNICUS/S2_SR_HARMONIZED/20190510T022331_20190510T022735_T50LPR')
+
+  // Pilih Band NIR
+  .select('B8')
+
+  // Faktor Skala Band (jika perlu)
+  .multiply(0.0001)  
+  
+  //clip dengan AOI
+  .clip(aoi);
+
+// Parameter Visualisasi NIR
+var nir_param = {
+  min: 0,
+  max: 0.45
+};
+
+// Menampilkan Band NIR pada Layer Peta
+Map.addLayer(s2single, nir_param, 'Visualisasi Single Band NIR');
+
+// Zoom ke AOI
+Map.centerObject(aoi, 10);
