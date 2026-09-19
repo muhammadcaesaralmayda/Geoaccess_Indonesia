@@ -1,0 +1,16 @@
+//************************ Filter Image Collection ************************
+
+// Filter Koleksi Citra Sentinel-2
+var s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED") 
+
+  // Filter sesuai Area of Interest (AOI)
+  .filterBounds(aoi)
+
+  // Filter koleksi citra sesuai rentang tanggal tertentu
+  .filterDate('2019-05-01', '2019-05-31')
+
+  // Filter Awan < 20%
+  .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20));
+
+  //Menampilkan Informasi Koleksi Citra
+    print(s2);
