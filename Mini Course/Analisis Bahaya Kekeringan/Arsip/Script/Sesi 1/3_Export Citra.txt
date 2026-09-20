@@ -1,0 +1,11 @@
+//************************ Ekspor Citra Terclip ke Google Drive ************************
+
+Export.image.toDrive({
+  image: s2RGB,
+  description: 'Exported_RGB_Clipped',
+  folder: 'GEE_Export',
+  fileNamePrefix: 'RGB_clipped_image',
+  region: aoi,
+  scale: 10,
+  maxPixels: 1e13
+});
