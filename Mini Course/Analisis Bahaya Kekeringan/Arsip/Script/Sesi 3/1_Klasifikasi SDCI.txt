@@ -1,0 +1,10 @@
+/********************** Klasifikasi SDCI **********************/
+function classifySDCI(sdci) {
+  return ee.Image(6) // kelas 6 > tidak ada kekeringan
+    .where(sdci.lte(0.5), 5) // kekeringan ringan
+    .where(sdci.lte(0.4), 4) // kekeringan sedang
+    .where(sdci.lte(0.3), 3) // kekeringan parah
+    .where(sdci.lte(0.2), 2) // kekeringan ekstrim
+    .where(sdci.lte(0.1), 1) // kekeringan luar biasa
+    .rename('SDCI_Class');
+}
