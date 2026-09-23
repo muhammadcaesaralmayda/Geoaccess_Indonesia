@@ -1,0 +1,33 @@
+/********************** SDCI Bulanan **********************/
+var indexCol = ee.ImageCollection.fromImages(
+  years.map(function(year) {
+    year = ee.Number(year);
+
+    // Pre-filter per tahun
+    var tciYear = tciCol.filter(ee.Filter.eq('year', year));
+    var pciYear = pciCol.filter(ee.Filter.eq('year', year));
+    var vciYear = vciCol.filter(ee.Filter.eq('year', year));
+
+    return months.map(function(month) {
+      month = ee.Number(month);
+
+      var tci = ee.Image(tciYear.filter(ee.Filter.eq('month', month)).first());
+      var pci = ee.Image(pciYear.filter(ee.Filter.eq('month', month)).first());
+      var vci = ee.Image(vciYear.filter(ee.Filter.eq('month', month)).first());
+
+      var sdci = tci.multiply(0.25)
+                    .add(pci.multiply(0.5))
+                    .add(vci.multiply(0.25))
+                    .rename('SDCI');
+
+      var sdci_class = classifySDCI(sdci);
+
+      return tci.addBands(pci).addBands(vci).addBands(sdci).addBands(sdci_class)
+                .set({
+                  year:  year,
+                  month: month,
+                  'system:time_start': ee.Date.fromYMD(year, month, 1).millis()
+                });
+    });
+  }).flatten()
+);
