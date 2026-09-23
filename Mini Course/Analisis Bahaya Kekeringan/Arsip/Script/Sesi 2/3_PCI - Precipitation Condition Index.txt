@@ -1,0 +1,36 @@
+// PCI - Precipitation Condition Index
+var pciCol = ee.ImageCollection.fromImages(
+  years.map(function(year) {
+    year = ee.Number(year);
+    var yearCol = chirpsPCP.filter(ee.Filter.calendarRange(year, year, 'year'));
+
+    return months.map(function(month) {
+      month = ee.Number(month);
+      var pcp = yearCol.filter(ee.Filter.calendarRange(month, month, 'month')).sum();
+
+      // Ambil min/max khusus bulan ini sebagai referensi
+      var pMin = ee.Image(pcpMinByMonth.filter(ee.Filter.eq('month', month)).first());
+      var pMax = ee.Image(pcpMaxByMonth.filter(ee.Filter.eq('month', month)).first());
+
+      // PCI = (P - Pmin)/(Pmax - Pmin)
+      var pci = pcp.subtract(pMin)
+                   .divide(pMax.subtract(pMin))
+                   .rename('PCI');
+
+      return pci.set({
+        year:  year,
+        month: month,
+        'system:time_start': ee.Date.fromYMD(year, month, 1).millis()
+      });
+    });
+  }).flatten()
+);
+
+var pciMonth = pciCol
+  .filter(ee.Filter.eq('year', 2023))
+  .filter(ee.Filter.eq('month', 11))
+  .first()
+  .clip(aoi);
+
+Map.addLayer(pciMonth.select('PCI'),
+  {min:0, max:1, palette:['red','yellow','green']}, 'PCI Nov 2023');
