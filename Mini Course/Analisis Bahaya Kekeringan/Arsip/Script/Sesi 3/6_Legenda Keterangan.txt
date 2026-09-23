@@ -1,0 +1,41 @@
+/********************** Legenda **********************/
+var legend = ui.Panel({ //membuat panel/kotak putih kosong
+  style: {
+    position: 'bottom-left',
+    padding: '10px',
+    backgroundColor: 'white'
+  }
+});
+legend.add(ui.Label({ // Menambahkan label judul ke panel kosong
+  value: 'Scaled Drought Condition Index (SDCI)',
+  style: {fontWeight: 'bold', fontSize: '15px', margin: '0 0 8px 0'}
+}));
+
+var classes = [ // deskripsi klasifikasi SDCI (Rhee et al. 2010)
+  {label: 'Tidak Kekeringan           (> 0.5)', color: '#ffffff'},
+  {label: 'Kekeringan Ringan      (0.4 - 0.5)', color: '#fcff4c'},
+  {label: 'Kekeringan Sedang       (0.3 - 0.4)', color: '#ffcc80'},
+  {label: 'Kekeringan Parah       (0.2 - 0.3)', color: '#ca8f46'},
+  {label: 'Kekeringan Ekstrim     (0.1 - 0.2)', color: '#d21616'},
+  {label: 'Kekeringan Luar Biasa  (0.0 - 0.1)', color: '#6b522d'},
+];
+
+classes.forEach(function(item) { // function untuk loopin
+  var colorBox = ui.Label({ //membuat kotak warna
+    style: {
+      backgroundColor: item.color,
+      padding: '10px',
+      margin: '2px 6px 2px 0',
+      border: '1px solid #aaa'
+    }
+  });
+  var description = ui.Label({ // deskripsi label
+    value: item.label,
+    style: {margin: '2px 0', fontSize: '11px'}
+  });
+  legend.add(ui.Panel({ // menambahkan kotak warna + deskripsi ke panel
+    widgets: [colorBox, description],
+    layout: ui.Panel.Layout.Flow('horizontal')
+  }));
+});
+Map.add(legend); //menambahkan panel legenda ke peta
