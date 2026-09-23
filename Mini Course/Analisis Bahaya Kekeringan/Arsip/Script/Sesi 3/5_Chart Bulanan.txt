@@ -1,0 +1,21 @@
+/********************** Chart Bulanan **********************/
+var chartAll = ui.Chart.image.series({
+  imageCollection: indexCol.select(['TCI', 'PCI', 'VCI', 'SDCI']), //Indeks yang mau ditampilkan
+  region: aoi,
+  reducer: ee.Reducer.mean(), // Hitung nilai mean di satu wilayah aoi
+  scale: 5000,
+  xProperty: 'system:time_start'
+})
+.setSeriesNames(['TCI', 'PCI', 'VCI', 'SDCI']) // Nama legenda grafik
+.setChartType('LineChart')
+.setOptions({
+  title: 'Semua Indeks Kekeringan Bulanan',
+  hAxis: {title: 'Waktu', format: 'MMM yyyy'},
+  vAxis: {title: 'Nilai Indeks', minValue: 0, maxValue: 1},
+  colors: ['#e34a33', '#2b83ba', '#1a9641', '#7b3294'],
+  lineWidth: 2,
+  pointSize: 4,
+  legend: {position: 'top'}
+});
+
+print(chartAll); //menampilkan chart ke Console
