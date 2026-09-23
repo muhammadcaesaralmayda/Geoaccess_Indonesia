@@ -1,0 +1,37 @@
+// VCI - Vegetation Condition Index
+var vciCol = ee.ImageCollection.fromImages(
+  years.map(function(year) {
+    year = ee.Number(year);
+    var yearCol = modNDVI.filter(ee.Filter.calendarRange(year, year, 'year'));
+
+    return months.map(function(month) {
+      month = ee.Number(month);
+      var ndvi = yearCol.filter(ee.Filter.calendarRange(month, month, 'month')).mean();
+
+      // Ambil min/max khusus bulan ini sebagai referensi
+      var nMin = ee.Image(ndviMinByMonth.filter(ee.Filter.eq('month', month)).first());
+      var nMax = ee.Image(ndviMaxByMonth.filter(ee.Filter.eq('month', month)).first());
+
+      // VCI = (NDVI - NDVImin)/(NDVImax - NDVImin)
+      var vci = ndvi.subtract(nMin)
+                    .divide(nMax.subtract(nMin))
+                    .rename('VCI');
+
+      return vci.set({
+        year:  year,
+        month: month,
+        'system:time_start': ee.Date.fromYMD(year, month, 1).millis()
+      });
+    });
+  }).flatten()
+);
+
+var vciMonth = vciCol
+  .filter(ee.Filter.eq('year', 2023))
+  .filter(ee.Filter.eq('month', 11))
+  .first()
+  .clip(aoi);
+
+// FIX: nama layer diperbaiki dari 'TCI Nov 2023' → 'VCI Nov 2023'
+Map.addLayer(vciMonth.select('VCI'),
+  {min:0, max:1, palette:['red','yellow','green']}, 'VCI Nov 2023');
