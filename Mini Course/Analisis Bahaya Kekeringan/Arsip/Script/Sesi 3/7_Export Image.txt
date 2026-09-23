@@ -1,0 +1,23 @@
+/********************** Export **********************/
+// Loop export kuartalan
+years.getInfo().forEach(function(year) { //fungsi loop untuk Q per tahun
+  ['Q1', 'Q2', 'Q3', 'Q4'].forEach(function(q) { //ganti menjadi months.getInfo().forEach(function(m){
+                                                // jika ingin bulanan
+    var image = indexQuarterCol
+      .filter(ee.Filter.eq('year', year))
+      .filter(ee.Filter.eq('quarter', q)) // ganti menjadi 'month', m
+      .first()
+      .clip(aoi);
+
+    Export.image.toDrive({
+      image: image.select('SDCI_Class'),
+      description: 'SDCI_' + year + '_' + q, //ganti menjadi m jika ingin bulanan
+      folder: 'GEE',
+      region: aoi,
+      scale: 1000,
+      maxPixels: 1e13,
+      fileFormat: 'GeoTIFF'
+    });
+
+  });
+});
