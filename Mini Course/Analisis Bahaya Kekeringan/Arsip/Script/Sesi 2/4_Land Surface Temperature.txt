@@ -1,0 +1,45 @@
+/********************** Land Surface Temperature (LST) **********************/
+var era5LST = ee.ImageCollection("ECMWF/ERA5_LAND/DAILY_AGGR")
+              .filterBounds(aoi)
+              .filterDate(baselineStart, baselineEnd)
+              .map(function(img){
+                return img.select('skin_temperature')
+                          .subtract(273.15) // Konversi ke Celsius
+                          .copyProperties(img, ['system:time_start']);
+              });
+
+// Agregasi bulanan LST
+var monthlyLST = ee.ImageCollection.fromImages(
+  baselineYears.map(function(year) {
+    return months.map(function(month) {
+      return era5LST
+        .filter(ee.Filter.calendarRange(year, year, 'year'))
+        .filter(ee.Filter.calendarRange(month, month, 'month'))
+        .mean()
+        .rename('skin_temperature')
+        .set({
+          year:  year,
+          month: month,
+          'system:time_start': ee.Date.fromYMD(year, month, 1).millis()
+        });
+    });
+  }).flatten()
+);
+
+// Min/max dari monthly mean per bulan yang sama
+var tempMinByMonth = ee.ImageCollection.fromImages(
+  months.map(function(m) {
+    return monthlyLST
+      .filter(ee.Filter.calendarRange(m, m, 'month'))
+      .min()
+      .set('month', m);
+  })
+);
+var tempMaxByMonth = ee.ImageCollection.fromImages(
+  months.map(function(m) {
+    return monthlyLST
+      .filter(ee.Filter.calendarRange(m, m, 'month'))
+      .max()
+      .set('month', m);
+  })
+);
