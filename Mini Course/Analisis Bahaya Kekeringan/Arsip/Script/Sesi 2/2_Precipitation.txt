@@ -1,0 +1,43 @@
+/********************** Precipitation **********************/
+var chirpsPCP = ee.ImageCollection("UCSB-CHG/CHIRPS/DAILY")
+                .filterBounds(aoi)
+                .filterDate(baselineStart, baselineEnd)
+                .select('precipitation');
+
+// Akumulasi curah hujan bulanan dari data pentad
+var baselineYears = ee.List.sequence(2005, 2024);
+
+var monthlyPCP = ee.ImageCollection.fromImages(
+  baselineYears.map(function(year) {
+    return months.map(function(month) {
+      var pcp = chirpsPCP
+        .filter(ee.Filter.calendarRange(year, year, 'year'))
+        .filter(ee.Filter.calendarRange(month, month, 'month'))
+        .sum()
+        .rename('precipitation');
+      return pcp.set({
+        year:  year,
+        month: month,
+        'system:time_start': ee.Date.fromYMD(year, month, 1).millis()
+      });
+    });
+  }).flatten()
+);
+
+// Min/max total bulanan per bulan yang sama (dari baseline 2005-2022)
+var pcpMinByMonth = ee.ImageCollection.fromImages(
+  months.map(function(m) {
+    return monthlyPCP
+      .filter(ee.Filter.calendarRange(m, m, 'month'))
+      .min()
+      .set('month', m);
+  })
+);
+var pcpMaxByMonth = ee.ImageCollection.fromImages(
+  months.map(function(m) {
+    return monthlyPCP
+      .filter(ee.Filter.calendarRange(m, m, 'month'))
+      .max()
+      .set('month', m);
+  })
+);
