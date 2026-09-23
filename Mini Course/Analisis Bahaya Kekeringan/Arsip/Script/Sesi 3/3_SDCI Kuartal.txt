@@ -1,0 +1,45 @@
+/********************** SDCI Kuartal **********************/
+var quarters = [ // daftar bulan-bulan dalam satu kuarta di satu tahun
+  {label: 'Q1', months: [1, 2, 3]},
+  {label: 'Q2', months: [4, 5, 6]},
+  {label: 'Q3', months: [7, 8, 9]},
+  {label: 'Q4', months: [10, 11, 12]}
+];
+
+var indexQuarterCol = ee.ImageCollection.fromImages( // menghitung rata2 3 bulan SDCI
+  years.map(function(year) {
+    year = ee.Number(year);
+
+    // Pre-filter per tahun
+    var tciYear = tciCol.filter(ee.Filter.eq('year', year));
+    var pciYear = pciCol.filter(ee.Filter.eq('year', year));
+    var vciYear = vciCol.filter(ee.Filter.eq('year', year));
+
+    return ee.List(quarters).map(function(q) { // pilih bulan pada tipe kuartal
+      q = ee.Dictionary(q);
+      var qMonths = ee.List(q.get('months'));
+      var qLabel  = q.get('label');
+      var qStart  = ee.Number(qMonths.get(0));
+
+      // hitung mean untuk bulan-bulan di satu kuartal
+      var tci = tciYear.filter(ee.Filter.inList('month', qMonths)).mean().rename('TCI');
+      var pci = pciYear.filter(ee.Filter.inList('month', qMonths)).mean().rename('PCI');
+      var vci = vciYear.filter(ee.Filter.inList('month', qMonths)).mean().rename('VCI');
+
+      var sdci = tci.multiply(0.25)
+                    .add(pci.multiply(0.5))
+                    .add(vci.multiply(0.25))
+                    .rename('SDCI');
+
+      var sdci_class = classifySDCI(sdci);
+
+      return tci.addBands(pci).addBands(vci).addBands(sdci).addBands(sdci_class)
+                .set({
+                  year:        year,
+                  quarter:     qLabel,
+                  month_start: qStart,
+                  'system:time_start': ee.Date.fromYMD(year, qStart, 1).millis()
+                });
+    });
+  }).flatten()
+);
