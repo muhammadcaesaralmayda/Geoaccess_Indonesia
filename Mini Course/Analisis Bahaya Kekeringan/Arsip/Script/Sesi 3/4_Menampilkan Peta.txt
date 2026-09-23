@@ -1,0 +1,34 @@
+/********************** Menampilkan Peta **********************/
+var sdciVar = {
+  min: 0, max: 0.6,
+  palette: ['#b30000', '#e34a33', '#fc8d59', '#fdcc8a', '#fef0d9']
+};
+var sdciClassVar = {
+  min: 1, max: 6,
+  palette: ['#6b522d', '#d21616', '#ca8f46', '#ffcc80', '#fcff4c', '#ffffff']
+};
+
+function addMap(collection, vis, prefix) {
+  years.getInfo().forEach(function(year) {
+    ['Q1', 'Q2', 'Q3', 'Q4'].forEach(function(q) {
+
+      var image = collection
+        .filter(ee.Filter.eq('year', year))
+        .filter(ee.Filter.eq('quarter', q)) //ganti menjadi 'month', month > apabila ingin bulanan
+        .first()
+        .clip(aoi);
+
+      Map.addLayer(
+        image,
+        vis,
+        prefix + ' ' + q + ' ' + year, // Nama layer > Nama Q1/2/3/4 2023/4
+        false
+      );
+
+    });
+  });
+}
+
+// Dipanggil ke peta:
+addMap(indexQuarterCol.select('SDCI_Class'), sdciClassVar, 'SDCI Class');
+addMap(indexQuarterCol.select('SDCI'), sdciVar, 'SDCI');
