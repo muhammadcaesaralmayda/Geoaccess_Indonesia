@@ -1,0 +1,36 @@
+// TCI - Temperature Condition Index
+var tciCol = ee.ImageCollection.fromImages(
+  years.map(function(year) {
+    year = ee.Number(year);
+    var yearCol = era5LST.filter(ee.Filter.calendarRange(year, year, 'year'));
+
+    return months.map(function(month) {
+      month = ee.Number(month);
+      var lst = yearCol.filter(ee.Filter.calendarRange(month, month, 'month')).mean();
+
+      // Ambil min/max khusus bulan ini sebagai referensi
+      var tMin = ee.Image(tempMinByMonth.filter(ee.Filter.eq('month', month)).first());
+      var tMax = ee.Image(tempMaxByMonth.filter(ee.Filter.eq('month', month)).first());
+
+      // TCI = (Tmax - T)/(Tmax - Tmin)
+      var tci = tMax.subtract(lst)
+                    .divide(tMax.subtract(tMin))
+                    .rename('TCI');
+
+      return tci.set({
+        year:  year,
+        month: month,
+        'system:time_start': ee.Date.fromYMD(year, month, 1).millis()
+      });
+    });
+  }).flatten()
+);
+
+var tciMonth = tciCol //menampilkan sampel hasil TCI
+  .filter(ee.Filter.eq('year', 2023))
+  .filter(ee.Filter.eq('month', 11))
+  .first()
+  .clip(aoi);
+
+Map.addLayer(tciMonth.select('TCI'),
+  {min:0, max:1, palette:['yellow', 'orange', 'red']}, 'TCI Nov 2023');
