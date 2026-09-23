@@ -1,0 +1,6 @@
+/********************** Konfigurasi Periode Waktu **********************/
+var baselineStart = ee.Date('2005-1-1');
+var baselineEnd   = ee.Date('2025-1-1');
+
+var years  = ee.List.sequence(2023, 2024);
+var months = ee.List.sequence(1, 12);
