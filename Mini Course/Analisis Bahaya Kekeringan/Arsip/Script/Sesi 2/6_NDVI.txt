@@ -1,0 +1,47 @@
+/********************** NDVI **********************/
+var modNDVI = ee.ImageCollection('MODIS/061/MOD13Q1')
+              .filterBounds(aoi)
+              .filterDate(baselineStart, baselineEnd)
+              .map(function(image){
+                var mask = image.select('SummaryQA').lte(1);
+                return image.select('NDVI')
+                            .multiply(0.0001)
+                            .updateMask(mask)
+                            .copyProperties(image, ['system:time_start']);
+              });
+
+// FIX: Agregasi bulanan NDVI 
+var monthlyNDVI = ee.ImageCollection.fromImages(
+  baselineYears.map(function(year) {
+    return months.map(function(month) {
+      return modNDVI
+        .filter(ee.Filter.calendarRange(year, year, 'year'))
+        .filter(ee.Filter.calendarRange(month, month, 'month'))
+        .mean()
+        .rename('NDVI')
+        .set({
+          year:  year,
+          month: month,
+          'system:time_start': ee.Date.fromYMD(year, month, 1).millis()
+        });
+    });
+  }).flatten()
+);
+
+// Min/max dari monthly mean per bulan yang sama 
+var ndviMinByMonth = ee.ImageCollection.fromImages(
+  months.map(function(m) {
+    return monthlyNDVI
+      .filter(ee.Filter.calendarRange(m, m, 'month'))
+      .min()
+      .set('month', m);
+  })
+);
+var ndviMaxByMonth = ee.ImageCollection.fromImages(
+  months.map(function(m) {
+    return monthlyNDVI
+      .filter(ee.Filter.calendarRange(m, m, 'month'))
+      .max()
+      .set('month', m);
+  })
+);
