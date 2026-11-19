@@ -1,0 +1,43 @@
+//************************ Filter Image Collection ************************
+
+//Filter Koleksi Citra Landsat
+var filter = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
+
+  //Region of Interest (ROI)
+  .filterBounds(geometry)
+
+  //Filter Tanggal
+  .filterDate('2019-11-01', '2019-11-30')
+
+  //Filter Awan
+  .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20));
+
+print(filter);
+
+//************************ Load Image Multiband ************************
+
+//Load Citra
+var sentinel2 = ee.Image('COPERNICUS/S2_SR_HARMONIZED/20191115T023951_20191115T025622_T49MDN')
+
+  //Single Band 
+  .select(['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B9', 'B11', 'B12'])
+  
+  //Clip Raster
+  .clip(geometry)
+  
+  //Faktor Skala Band
+  .multiply(0.0001);
+  
+//Zoom ke ROI
+Map.centerObject(geometry);
+
+// ******************** Band Combination ********************
+
+//Mendefinisikan Band-Band untuk Kombinasi Multispektral
+var multispectral = sentinel2.select(['B4', 'B3', 'B2']);
+
+//Parameter Visualisasi Multipleband 
+var multispectral_param = {min: 0, max: 0.25};
+
+//Menampilkan Citra pada Layer Peta
+Map.addLayer(multispectral, multispectral_param, 'Sentinel 2 - Multispectral');
