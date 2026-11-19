@@ -1,0 +1,12 @@
+//************************ Minimum-Maximum Pixel Value ***********************
+
+// Hitung Nilai Minimum dan Maksimum
+var minMaxStats = TSS_masked.reduceRegion({
+  reducer: ee.Reducer.minMax(), 
+  geometry: geometry,          
+  scale: 10,                    
+  maxPixels: 1e10          
+});
+
+// Cetak Hasil
+print('Nilai Konsentrasi TSS Minimum dan Maksimum', minMaxStats);
