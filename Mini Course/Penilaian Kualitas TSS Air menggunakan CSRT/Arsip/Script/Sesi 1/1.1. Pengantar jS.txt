@@ -1,0 +1,11 @@
+//Contoh String
+var salam = 'Selamat pagi peserta';
+print(salam);
+
+//Contoh Number
+var angka = 50;
+print(angka);
+
+//Contoh List
+var list = [salam, angka, 'Short Course Geoaccess'];
+print(list);
