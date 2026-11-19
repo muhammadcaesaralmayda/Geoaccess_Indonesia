@@ -1,0 +1,41 @@
+//*********************** Total Suspended Solid (TSS) ***********************
+
+//Menghitung TSS
+var TSS = sentinel2.expression("(1970.8 * B4 * B4) - (41.16 * B4) + 45.52", {
+    B4: sentinel2.select("B4"), 
+}).rename('TSS');
+
+//Terapkan NDWI Mask pada TSS
+var TSS_masked = TSS.updateMask(NDWIMask);
+
+//Mendefinisikan Parameter Visualiasi
+var TSS_param = {
+  min: 45,
+  max: 87,
+  palette: [
+		'f7fbff', 'd0d1e6', 'a6bddb', '74a9cf', '3690c0',  // Warna biru muda hingga biru tua 
+    '0570b0', '045a8d', '023858', 'fed976', 'feb24c',  // Biru lebih tua hingga jingga
+    'fd8d3c', 'fc4e2a', 'e31a1c', 'bd0026', '800026'   // Oranye dan merah tua 
+	]
+};
+
+//Menampilkan TSS pada Layar Peta
+Map.addLayer(TSS_masked, TSS_param, 'TSS');
+
+//******************** Extract TSS Value with Points ********************
+
+//Ekstrak Nilai Raster sesuai Titik Sampel
+var sampledPointsTSS = TSS_masked.sampleRegions({
+  collection: titik_uji, 
+  scale: 10,  
+  geometries: true  
+});
+print(sampledPointsTSS);
+
+// Export Data
+Export.table.toDrive({
+  collection: sampledPointsTSS,
+  description: 'TSS_ExtractPoints',
+  folder: 'GEE',
+  fileFormat: 'CSV'
+});  
