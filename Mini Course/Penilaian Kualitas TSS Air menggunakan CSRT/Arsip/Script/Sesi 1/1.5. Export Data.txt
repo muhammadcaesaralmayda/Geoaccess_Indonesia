@@ -1,0 +1,11 @@
+//************************Export Image************************
+
+//Ekspor Data
+Export.image.toDrive({
+  image: landsat9,
+  description: 'GEE_Landsat9_RGB432',
+  folder: 'GEE',
+  scale: 30,
+  region: geometry,
+  fileFormat: 'GeoTIFF'
+  });
