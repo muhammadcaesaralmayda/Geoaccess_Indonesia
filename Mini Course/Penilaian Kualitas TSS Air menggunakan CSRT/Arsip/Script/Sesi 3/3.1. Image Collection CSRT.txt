@@ -1,0 +1,21 @@
+//************************ Image Collection CSRT ************************
+
+//Membuat Image Collection dari Aset
+var collection = ee.ImageCollection('projects/ee-geoaccessid/assets/Jilin1');
+
+//Mencetak Image Collection ke Console
+print(collection, 'Original Image Collection');
+
+//Menggabungkan semua Image dalam Collection menjadi Satu Citra Multiband
+var mergedImage = collection.toBands();
+
+//Menambahkan Nama untuk Setiap Band
+var Jilin1 = mergedImage.rename(['Blue', 'Green', 'Red', 'NIR']);
+print(Jilin1, 'List Band Jilin 1');
+
+//Memotong Citra sesuai Area Kajian
+var Jilin1Clip = Jilin1.clip(geometry);
+
+//Menampilkan Citra di Peta
+Map.centerObject(geometry, 15)
+Map.addLayer(Jilin1Clip, {bands: ['Red', 'Green', 'Blue'], min: 429, max: 707}, 'Jilin 1 - Natural Color');
