@@ -1,0 +1,32 @@
+//*********** Total Suspended Solid (TSS) *****************
+
+// Menghitung TSS dengan Algoritma Hasil Regresi (2019) di Pesisir Demak
+var TSS_1 = normalizedJilin1.expression("(1970.8 * B3 * B3) - (41.16 * B3) + 45.52", {
+    B3: normalizedJilin1.select("Red"), 
+}).rename('TSS_1').updateMask(NDWIMask);
+
+// Algoritma Parwati (2014) di Perairan Berau, Kalimantan Timur
+var TSS_2 = normalizedJilin1.expression("3.3238 * exp(34.099* B3)", {
+      B3: normalizedJilin1.select('Red')  
+}).rename('TSS_2').updateMask(NDWIMask);
+
+// Algoritma Laili (2015) di Perairan Poteran, Jawa Timur
+var TSS_3 = normalizedJilin1.expression("31.420 * (log10(B1) / log10(B3)) - 12.719", {
+      B1: normalizedJilin1.select('Blue'),  
+      B3: normalizedJilin1.select('Red')  
+}).rename('TSS_3').updateMask(NDWIMask);
+
+//Mendefinisikan Parameter Visualiasi
+var TSS_param = {
+  min: 56,
+  max: 64,
+  palette: [
+		'f7fbff', 'd0d1e6', 'a6bddb', '74a9cf', '3690c0',  // Warna biru muda hingga biru tua 
+    '0570b0', '045a8d', '023858', 'fed976', 'feb24c',  // Biru lebih tua hingga jingga
+    'fd8d3c', 'fc4e2a', 'e31a1c', 'bd0026', '800026'   // Oranye dan merah tua 
+	]};
+
+// Menampilkan TSS pada Layar Peta dengan Min-Max yang Berbeda untuk Setiap Algoritma
+Map.addLayer(TSS_1, TSS_param, 'TSS - Algoritma Hasil Regresi');
+Map.addLayer(TSS_2, TSS_param, 'TSS - Parwati');
+Map.addLayer(TSS_3, TSS_param, 'TSS - Laili');
