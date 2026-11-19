@@ -1,0 +1,32 @@
+//*********** Normalized Difference Water Index (NDWI) *****************
+
+//Menghitung NDWI
+//NDWI = (GREEN - NIR) / (GREEN + NIR)
+var NDWI = sentinel2.expression("(B3 - B8) / (B3 + B8)", {
+    B3: sentinel2.select("B3"),
+    B8: sentinel2.select("B8")
+}).rename('NDWI');
+
+//Mendefinisikan Parameter Visualiasi
+var NDWI_param = {
+  min: -0.30,
+  max: 0.60,
+  palette: [
+		'e9ecf6','d4d8ed','bec5e4','a9b2db','939fd2',
+		'7d8bc9','6878c0','5265b7','3d51ae', '273ea5'
+	]
+};
+
+//Menampilkan NDWI pada Layar Peta
+Map.addLayer(NDWI, NDWI_param, 'NDWI');
+
+//*********************** Masking Water Pixels ***********************
+
+//Create NDWI Mask
+var NDWIThreshold = NDWI.gte(0.1);
+var NDWIMask = NDWIThreshold.updateMask(NDWIThreshold);
+Map.addLayer(
+    NDWIThreshold,
+    {palette:['black', 'white']},
+    'NDWI Binary Mask');
+Map.addLayer(NDWIMask.clip(geometry), {palette:['blue']}, 'NDWI Mask');
