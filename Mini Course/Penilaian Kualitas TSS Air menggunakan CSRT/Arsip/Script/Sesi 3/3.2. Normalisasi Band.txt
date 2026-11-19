@@ -1,0 +1,32 @@
+//************************ Menghitung Nilai Minimum-Maksimum ************************
+
+//Menghitung Nilai Minimum dan Maksimum untuk Semua Band
+var minMaxStats = Jilin1Clip.reduceRegion({
+  reducer: ee.Reducer.minMax(), 
+  geometry: geometry,       
+  scale: 0.75,             
+  maxPixels: 1e10       
+});
+
+//Mencetak Hasil
+print('Nilai Minimum dan Maksimum Setiap Band', minMaxStats);
+
+//************************ Normalisasi Band ************************
+
+// Min dan Max nilai
+var valueMin = 39;
+var valueMax = 5721;
+
+// Normalisasi Citra dalam Rentang 0–1
+var normalizedJilin1 = Jilin1Clip.subtract(valueMin).divide(valueMax - valueMin);
+    
+//Hitung Nilai Minimum dan Maksimum Setelah Normalisasi
+var normalizedStats = normalizedJilin1.reduceRegion({
+  reducer: ee.Reducer.minMax(),
+  geometry: geometry,          
+  scale: 0.75,                 
+  maxPixels: 1e10             
+});
+
+//Cetak Hasil ke Console
+print('Nilai Minimum dan Maksimum Hasil Normalisasi:', normalizedStats);
