@@ -1,0 +1,17 @@
+//******************** Extract Reflectance Value with Points ********************
+
+//Ekstrak Nilai Raster sesuai Titik Sampel
+var sampledPoints = sentinel2.sampleRegions({
+  collection: samples, 
+  scale: 10,  
+  geometries: true  
+});
+print(sampledPoints);
+
+//Export Data
+Export.table.toDrive({
+  collection: sampledPoints,
+  description: 'Sentinel2_ExtractPoints',
+  folder: 'GEE',
+  fileFormat: 'CSV'
+});  
