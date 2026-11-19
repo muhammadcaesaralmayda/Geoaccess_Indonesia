@@ -1,0 +1,28 @@
+//************************ Minimum-Maximum TSS ***********************
+
+// Daftar TSS dan Nama Algoritma
+var TSS_list = [TSS_1, TSS_2, TSS_3];
+var TSS_names = ['TSS - Algoritma Hasil Regresi', 'TSS - Parwati', 'TSS - Laili'];
+
+// Hitung Min-Max untuk Semua TSS
+TSS_list.forEach(function(TSS, index) {
+  var minMax = TSS.reduceRegion({
+    reducer: ee.Reducer.minMax(),
+    geometry: geometry,
+    scale: 0.75,
+    maxPixels: 1e10
+  });
+  print(TSS_names[index], minMax);
+});
+
+//************************ Export Image ************************
+
+//Ekspor Data
+Export.image.toDrive({
+  image: TSS_1,
+  description: 'TSS - Jilin 1',
+  folder: 'GEE',
+  scale: 0.75,
+  region: geometry,
+  fileFormat: 'GeoTIFF'
+  });
