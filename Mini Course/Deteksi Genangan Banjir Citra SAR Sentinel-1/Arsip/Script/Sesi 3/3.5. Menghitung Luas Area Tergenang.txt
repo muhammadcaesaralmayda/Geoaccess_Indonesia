@@ -1,0 +1,11 @@
+//-------------------------Menghitung Luas Area Tergenang Banjir--------------------------//
+
+// Menghitung Luas Area Tergenang Banjir
+var LuasAreaTergenang = banjirPixelArea.reduceRegion({
+  reducer: ee.Reducer.sum(),
+  geometry: geometry,
+  scale: 10,
+  maxPixels: 10e13
+}).values().get(0);
+
+print('Estimasi Total Area Tergenang Banjir:', ee.Number(LuasAreaTergenang).round());
