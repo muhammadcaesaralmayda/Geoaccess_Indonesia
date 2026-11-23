@@ -1,0 +1,7 @@
+//--------------------------Deteksi Perubahan dengan Ratio Image-------------------------//
+
+// Ratio Image
+var ratio_image = saat_filter.divide(sebelum_filter).rename('Deteksi Perubahan');
+
+// Menampilkan Perubahan Pada Layer
+Map.addLayer(ratio_image, {min: 0, max: 10, palette: ['white', 'blue']}, 'Deteksi Perubahan');
