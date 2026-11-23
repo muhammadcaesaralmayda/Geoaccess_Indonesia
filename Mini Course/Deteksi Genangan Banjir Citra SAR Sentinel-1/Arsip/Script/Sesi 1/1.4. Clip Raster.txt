@@ -1,0 +1,25 @@
+//************************ Load Image Multiband ***********************
+
+// Load Citra
+var sentinel2 = ee.Image('COPERNICUS/S2_SR_HARMONIZED/20240815T023529_20240815T025522_T49MDN')
+
+  // Multiple Band 
+  .select(['B4', 'B3', 'B2'])
+
+  // Faktor Skala Band
+  .multiply(0.0001)
+  
+  // Clip Raster
+  .clip(geometry);
+
+// Parameter Visualisasi Multipleband 
+var sentinel2_param = {
+  min: 0, 
+  max: 0.2
+};
+
+// Menampilkan Citra pada Layer Peta
+Map.addLayer(sentinel2, sentinel2_param, 'RGB 432');
+
+// Zoom ke ROI
+Map.centerObject(geometry, 10);
