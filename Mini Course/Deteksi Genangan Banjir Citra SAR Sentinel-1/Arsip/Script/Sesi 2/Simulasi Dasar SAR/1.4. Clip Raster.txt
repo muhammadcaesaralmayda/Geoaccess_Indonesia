@@ -1,0 +1,60 @@
+//************************ Filter Sentinel-1 GRD Image Collection ************************
+
+// Filter Koleksi Citra Sentinel-1 GRD
+var imgcollection = ee.ImageCollection('COPERNICUS/S1_GRD')
+
+    // Filter Tanggal
+    .filterDate('2024-07-01', '2024-09-01')
+    
+    // Filter Instrument Mode
+    .filter(ee.Filter.eq('instrumentMode', 'IW'))
+    
+    // Filter Area
+    .filterBounds(geometry);
+
+print(imgcollection);
+
+//************************ Filter Orbit dan Polarisasi ************************
+
+// Fungsi untuk Memproses Citra Berdasarkan Orbit dan Polarisasi
+function filter (imgcollection, orbit, polarization) {
+  
+    // Mengembalikan Hasil Filter dari Koleksi Citra
+    return imgcollection
+    
+        // Filter Berdasarkan Orbit Satelit
+        .filter(ee.Filter.eq('orbitProperties_pass', orbit))
+        
+        // Filter Berdasarkan Polarisasi Radar
+        .filter(ee.Filter.listContains('transmitterReceiverPolarisation', polarization))
+        
+        // Memilih Band
+        .select([polarization])
+        
+        // Perhitungan Nilai Rata-Rata
+        .mean()
+        
+        // Pemotongan Citra
+        .clip(geometry);}
+
+//************************ Load Band Sentinel-1 GRD ************************
+
+// Mendefinisikan Band VV dan VH untuk Descending dan Ascending
+var VV_DESC = filter(imgcollection, 'DESCENDING', 'VV');
+var VH_DESC = filter(imgcollection, 'DESCENDING', 'VH');
+var VV_ASC = filter(imgcollection, 'ASCENDING', 'VV');
+var VH_ASC = filter(imgcollection, 'ASCENDING', 'VH');
+
+// Menampilkan Singleband dalam Peta
+Map.addLayer(VV_DESC, {min: -20, max: 3.5}, 'VV Descending');
+Map.addLayer(VH_DESC, {min: -20, max: -7}, 'VH Descending');
+Map.addLayer(VV_ASC, {min: -20, max: 3.5}, 'VV Ascending');
+Map.addLayer(VH_ASC, {min: -20, max: -7}, 'VH Ascending');
+
+// Menampilkan Multiband dalam Peta
+Map.addLayer(VV_DESC.addBands(VH_DESC).addBands(VV_ASC), 
+            {min: -30, max: -4}, 
+            'Composite Band');
+
+// Zoom ke ROI
+Map.centerObject(geometry, 10);
