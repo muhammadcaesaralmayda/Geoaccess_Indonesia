@@ -1,0 +1,9 @@
+//---------------------------Menerapkan Filtering Speckle------------------------------//
+
+// Reduksi Speckle Noise dengan menggunakan metode Speckle Filtering
+var smoothing_radius = 50;
+var sebelum_filter = sebelum.focal_mean(smoothing_radius, 'circle', 'meters');
+var saat_filter = saat.focal_mean(smoothing_radius, 'circle', 'meters');
+Map.addLayer(sebelum_filter, {min: -25, max: 0}, 'Sebelum Banjir Sudah Difilter', 0);
+Map.addLayer(saat_filter, {min: -25, max: 0}, 'Saat Banjir Sudah Difilter', 1);
+Map.centerObject(geometry);
