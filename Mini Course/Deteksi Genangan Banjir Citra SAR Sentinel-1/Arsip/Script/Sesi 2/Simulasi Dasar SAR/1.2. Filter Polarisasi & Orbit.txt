@@ -1,0 +1,19 @@
+//************************ Filter Orbit dan Polarisasi ************************
+
+// Fungsi untuk Memproses Citra Berdasarkan Orbit dan Polarisasi
+function filter (imgcollection, orbit, polarization) {
+  
+    // Mengembalikan Hasil Filter dari Koleksi Citra
+    return imgcollection
+    
+        // Filter Berdasarkan Orbit Satelit
+        .filter(ee.Filter.eq('orbitProperties_pass', orbit))
+        
+        // Filter Berdasarkan Polarisasi Radar
+        .filter(ee.Filter.listContains('transmitterReceiverPolarisation', polarization))
+        
+        // Memilih Band
+        .select([polarization])
+        
+        // Perhitungan Nilai Rata-Rata
+        .mean();}
