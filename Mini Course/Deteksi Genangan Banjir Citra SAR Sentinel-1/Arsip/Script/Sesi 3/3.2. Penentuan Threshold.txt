@@ -1,0 +1,19 @@
+//------------------------------Menetapkan Nilai Threshold--------------------------------//
+
+// Membuat Histogram dari Perubahan Nilai
+var chart = ui.Chart.image.histogram({
+  image: ratio_image,
+  region: geometry,
+  scale: 10,
+  maxPixels: 10e13
+})
+.setOptions({
+  title: 'Histogram Perubahan',
+  hAxis: {title: 'Perubahan Backscatter (dB)'},
+  vAxis: {title: 'Frekuensi'},
+  legend: 'none'
+});
+print(chart);
+
+// Menetapkan Threshold
+var nilaiThreshold = ratio_image.gt(1.5);
