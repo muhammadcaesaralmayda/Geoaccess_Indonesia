@@ -1,0 +1,7 @@
+//---------------------------------Mosaic Citra---------------------------------------//
+
+// Membuat Mosaic Citra
+var sebelum = citra_sebelum.mosaic().clip(geometry);
+var saat = citra_saat.mosaic().clip(geometry);
+Map.addLayer(sebelum, {min: -25, max: 0}, 'Sebelum Banjir', 0);
+Map.addLayer(saat, {min: -25, max: 0}, 'Saat Banjir', 1);
