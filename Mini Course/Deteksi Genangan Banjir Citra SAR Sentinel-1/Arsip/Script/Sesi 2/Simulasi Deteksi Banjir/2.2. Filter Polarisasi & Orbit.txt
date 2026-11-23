@@ -1,0 +1,5 @@
+//-----------------------Filter Orbit & Polarisasi Citra------------------------------//
+
+// Filter Polarisasi & Orbit
+var polarisasi = "VH";
+var orbit = "DESCENDING";
