@@ -1,0 +1,5 @@
+//--------------------------Visualisasi Area Tergenang Banjir----------------------------//
+
+// Visualisasi Area Tergenang Banjir
+var visualisasiBanjir = {min: 0, max: 1, palette: ['white', 'darkblue']};
+Map.addLayer(areaBanjir, visualisasiBanjir, 'Deteksi Genangan Banjir');
