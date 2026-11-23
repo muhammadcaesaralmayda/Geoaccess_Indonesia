@@ -1,0 +1,21 @@
+//************************ Load Band Sentinel-1 GRD ************************
+
+// Mendefinisikan Band VV dan VH untuk Descending dan Ascending
+var VV_DESC = filter(imgcollection, 'DESCENDING', 'VV');
+var VH_DESC = filter(imgcollection, 'DESCENDING', 'VH');
+var VV_ASC = filter(imgcollection, 'ASCENDING', 'VV');
+var VH_ASC = filter(imgcollection, 'ASCENDING', 'VH');
+
+// Menampilkan Singleband dalam Peta
+Map.addLayer(VV_DESC, {min: -20, max: 3.5}, 'VV Descending');
+Map.addLayer(VH_DESC, {min: -20, max: -7}, 'VH Descending');
+Map.addLayer(VV_ASC, {min: -20, max: 3.5}, 'VV Ascending');
+Map.addLayer(VH_ASC, {min: -20, max: -7}, 'VH Ascending');
+
+// Menampilkan Multiband dalam Peta
+Map.addLayer(VV_DESC.addBands(VH_DESC).addBands(VV_ASC), 
+            {min: -30, max: -4}, 
+            'Composite Band');
+
+// Zoom ke ROI
+Map.centerObject(geometry, 10);
