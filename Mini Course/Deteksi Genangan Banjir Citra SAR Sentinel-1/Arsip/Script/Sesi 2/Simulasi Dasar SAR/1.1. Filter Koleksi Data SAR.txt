@@ -1,0 +1,15 @@
+//************************ Filter Sentinel-1 GRD Image Collection ************************
+
+// Filter Koleksi Citra Sentinel-1 GRD
+var imgcollection = ee.ImageCollection('COPERNICUS/S1_GRD')
+
+    // Filter Tanggal
+    .filterDate('2024-07-01', '2024-09-01')
+    
+    // Filter Instrument Mode
+    .filter(ee.Filter.eq('instrumentMode', 'IW'))
+    
+    // Filter Area
+    .filterBounds(geometry);
+
+print(imgcollection);
