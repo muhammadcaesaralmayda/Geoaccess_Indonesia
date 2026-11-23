@@ -1,0 +1,53 @@
+//******************** Image Mosaic & Cloud Masking ********************
+
+var sentinel2_mask = function(image) {
+
+  // Bitmask untuk bayangan awan
+  var cloudShadowBitMask = (1 << 11);
+
+  // Bitmask untuk awan
+  var cloudsBitMask = (1 << 10);
+
+  // Memilih band QA_PIXEL dari citra
+  var qa = image.select('QA60');
+
+  // Piksel tanpa bayangan awan
+  var mask = qa.bitwiseAnd(cloudShadowBitMask).eq(0)
+
+    // Piksel tanpa awan
+    .and(qa.bitwiseAnd(cloudsBitMask).eq(0));
+    return image.updateMask(mask);
+};
+
+//******************** Filter, Load, & Clip Image ********************
+
+// Koleksi Citra
+var sentinel2 = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
+
+  // Filter Tanggal
+  .filterDate('2024-01-01', '2025-01-01')
+
+  // Load Masking Data Collection
+  .map(sentinel2_mask)
+  .median()
+
+  // Clip Raster
+  .clip(geometry)
+
+  // Multiple Band 
+  .select (['B11', 'B8', 'B4'])
+
+  //Faktor Skala Band
+  .multiply(0.0001);
+
+// Parameter Visualisasi Multipleband
+var sentinel2_param = {
+  min: 0, 
+  max: 0.4
+};
+
+// Menampilkan Citra pada Layer Peta
+Map.addLayer(sentinel2, sentinel2_param, 'Vegetation Analysis');
+
+// Zoom ke ROI
+Map.centerObject(geometry, 10);
