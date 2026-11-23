@@ -1,0 +1,5 @@
+//-----------------------------Ekstraksi Area Tergenang Banjir--------------------------//
+
+// Ekstraksi Area Banjir
+var areaBanjir = nilaiThreshold.updateMask(nilaiThreshold);
+var banjirPixelArea = areaBanjir.multiply(ee.Image.pixelArea().divide(10000)); //hektar
