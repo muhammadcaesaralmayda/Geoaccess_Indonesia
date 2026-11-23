@@ -1,0 +1,17 @@
+//----------------------Filter Citra Berdasarkan Parameter----------------------------//
+
+// Koleksi Citra Berdasarkan Parameter Mode, Polarisas, Orbit
+var collection= ee.ImageCollection('COPERNICUS/S1_GRD')
+  .filter(ee.Filter.eq('instrumentMode','IW'))
+  .filter(ee.Filter.listContains('transmitterReceiverPolarisation', polarisasi))
+  .filter(ee.Filter.eq('orbitProperties_pass',orbit)) 
+  .filter(ee.Filter.eq('resolution_meters',10))
+  .filterBounds(geometry)
+  .select(polarisasi);
+  
+// Memilih Citra Berdasarkan Parameter Waktu yang Sudah Ditentukan
+var citra_sebelum = collection.filterDate(sebelum_start, sebelum_end);
+var citra_saat = collection.filterDate(saat_start,saat_end);
+
+print(citra_sebelum);
+print(citra_saat);
