@@ -1,0 +1,11 @@
+//-------------------------------------Export Data----------------------------------------//
+
+// Export Hasil Deteksi Genangan 
+Export.image.toDrive({
+  image: areaBanjir,
+  description: 'Deteksi_Genangan_Banjir',
+  scale: 10,
+  region: geometry,
+  fileFormat: 'GeoTIFF',
+  maxPixels: 1e13
+});
