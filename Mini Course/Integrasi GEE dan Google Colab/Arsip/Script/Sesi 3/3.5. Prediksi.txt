@@ -1,0 +1,28 @@
+# Prediksi
+
+array.shape
+
+print("Raster shape:", array.shape) # ukuran raster
+print("Jumlah predictor:", array.shape[2]) # jumlah predictor
+
+height, width, n_bands = array.shape # memberi nama dimensi
+
+""" mengubah bentuk data dari h,w,n jadi hxw, n untuk mempermudah xgboost
+model lebih suka belajar:
+baris = titik / observasi
+kolom = predictor """
+
+X_raster = array.reshape(
+    height * width,
+    n_bands
+)
+
+print("Shape data raster:", X_raster.shape)
+
+
+# membuat prediksi
+canopy_pred = best_model.predict(X_raster)
+
+print("Jumlah pixel diprediksi:", len(canopy_pred))
+print("Min:", canopy_pred.min())
+print("Max:", canopy_pred.max())
