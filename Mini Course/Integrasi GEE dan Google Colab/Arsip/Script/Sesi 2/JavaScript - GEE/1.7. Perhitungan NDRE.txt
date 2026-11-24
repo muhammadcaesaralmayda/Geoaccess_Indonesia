@@ -1,0 +1,3 @@
+var ndre = composite_veg
+  .normalizedDifference(['B8', 'B5'])
+  .rename('NDRE');
