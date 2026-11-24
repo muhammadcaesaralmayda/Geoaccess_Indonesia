@@ -1,0 +1,17 @@
+Export.image.toAsset({
+
+  image: predictors,
+
+  description:
+    'Predictors_Vegetation_2026',
+
+  assetId:
+    'Predictors_Vegetation_2026',
+
+  region: aoi,
+
+  scale: 10,
+
+  maxPixels: 1e13
+
+});
