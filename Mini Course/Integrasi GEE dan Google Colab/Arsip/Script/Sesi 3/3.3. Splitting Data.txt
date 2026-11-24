@@ -1,0 +1,28 @@
+predictors_band = [
+    'B2','B3','B4','B5',
+    'B6','B7','B8',
+    'B11','B12',
+    'NDVI','EVI','SAVI','NDRE'
+]
+
+target = 'canopy_cover'
+
+X = df_ml[predictors_band]
+y = df_ml[target]
+
+print("X:", X.shape)
+print("y:", y.shape)
+
+# split
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.20,
+    random_state=123
+)
+
+print("Data training:", X_train.shape)
+print("Data testing:", X_test.shape)
