@@ -1,0 +1,91 @@
+# Visualisasi Hasil Prediksi
+
+canopy_map = canopy_pred.reshape(
+    height,
+    width
+)
+
+print("Shape canopy map:", canopy_map.shape)
+
+plt.figure(figsize=(10, 8))
+
+im = plt.imshow(
+    canopy_map,
+    vmin=0,
+    vmax=100
+)
+
+plt.colorbar(
+    im,
+    label="Canopy Cover (%)"
+)
+
+plt.title("Predicted Canopy Cover")
+plt.axis("off")
+
+plt.show()
+
+#------------------------------------------------------------------
+
+# Masking
+
+# Buat mask berdasarkan pixel yang memiliki data
+valid_mask = ~np.isnan(array[:, :, 0])
+
+# Salin hasil prediksi
+canopy_map_masked = canopy_map.astype(float)
+
+# Pixel yang tidak valid dibuat transparan
+canopy_map_masked[~valid_mask] = np.nan
+
+#------------------------------------------------------------------
+
+# Visualisasi ditambah dengan RGB
+
+s2_rgb = geemap.ee_to_numpy(
+    predictors.select(['B4', 'B3', 'B2']),
+    region=predictors.geometry(),
+    scale=100
+)
+
+# Stretch setiap band ke 0-1
+rgb_stretch = np.zeros_like(s2_rgb)
+
+for i in range(3):
+    band = s2_rgb[:, :, i]
+
+    band_min = np.nanmin(band)
+    band_max = np.nanmax(band)
+
+    rgb_stretch[:, :, i] = (
+        (band - band_min) /
+        (band_max - band_min)
+    )
+
+fig, axes = plt.subplots(1, 2, figsize=(16, 7))
+
+# Sentinel-2
+axes[0].imshow(rgb_stretch)
+axes[0].set_title(
+    "Sentinel-2 Multispectral\n(B4 - B3 - B2)"
+)
+axes[0].axis("off")
+
+# Predicted Canopy Cover
+im = axes[1].imshow(
+    canopy_map_masked,
+    vmin=20,
+    vmax=30
+)
+
+axes[1].set_title("Predicted Canopy Cover")
+axes[1].axis("off")
+
+plt.colorbar(
+    im,
+    ax=axes[1],
+    label="Canopy Cover (%)"
+)
+
+plt.tight_layout()
+plt.show()
