@@ -1,0 +1,7 @@
+# Memanggil Data
+predictors = ee.Image(
+    'projects/ratnageoaccess/assets/Predictors_Vegetation_coba_2026'
+)
+
+print("Predictor bands:")
+print(predictors.bandNames().getInfo())
