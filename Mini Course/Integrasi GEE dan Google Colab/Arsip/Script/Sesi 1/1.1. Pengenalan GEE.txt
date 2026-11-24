@@ -1,0 +1,78 @@
+// Pengenalan GEE
+print('Hello Google Earth Engine!');
+
+
+// Variabel dan print
+var nama = 'Kerapatan Kanopi';
+var tahun = 2026;
+
+print('Nama analisis:', nama);
+print('Tahun:', tahun);
+
+
+// Memanggil AoI
+// Silakan membuat Area of Interest masing-masing. tidak perlu terlalu luas
+
+// Memanggil citra Sentinel-2
+var sentinel2 = ee.ImageCollection(
+  'COPERNICUS/S2_SR_HARMONIZED'
+)
+  .filterBounds(aoi)
+  .filterDate('2026-01-01', '2026-02-01');
+
+print('Jumlah citra:', sentinel2.size());
+
+
+// Komposit dan Menampilkan Citra
+var composite = sentinel2
+  .median()
+  .clip(aoi);
+
+Map.addLayer(
+  composite,
+  {
+    bands: ['B4', 'B3', 'B2'],
+    min: 0,
+    max: 3000
+  },
+  'Sentinel-2 RGB'
+);
+
+
+// Memilih Band dan Membuat Indeks
+var red = composite.select('B4');
+var nir = composite.select('B8');
+
+var ndvi = nir
+  .subtract(red)
+  .divide(nir.add(red))
+  .rename('NDVI');
+
+Map.addLayer(
+  ndvi,
+  {
+    min: -1,
+    max: 1,
+    palette: ['brown', 'yellow', 'green']
+  },
+  'NDVI'
+);
+
+
+// Menggabungkan Band
+var predictor = composite
+  .select(['B2', 'B3', 'B4', 'B8'])
+  .addBands(ndvi);
+
+print('Nama band:', predictor.bandNames());
+
+
+// Export Citra ke Asset
+Export.image.toAsset({
+  image: predictor,
+  description: 'Predictor_Day1',
+  assetId: 'projects/ratnageoaccess/assets/Predictor_Day1',
+  region: aoi,
+  scale: 10,
+  maxPixels: 1e13
+});
