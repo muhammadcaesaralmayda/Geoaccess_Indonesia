@@ -1,0 +1,5 @@
+# Login ke Google Earth Engine
+ee.Authenticate()
+
+# Initialize Google Cloud Project
+ee.Initialize(project='NAMA PROJECT MASING-MASING')
