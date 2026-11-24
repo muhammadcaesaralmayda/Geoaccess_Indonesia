@@ -1,0 +1,23 @@
+var predictors = composite_veg
+  .select([
+    'B2',
+    'B3',
+    'B4',
+    'B5',
+    'B6',
+    'B7',
+    'B8',
+    'B11',
+    'B12'
+  ])
+  .addBands([
+    ndvi,
+    evi,
+    savi,
+    ndre
+  ]);
+
+print(
+  'Predictor bands:',
+  predictors.bandNames()
+);
