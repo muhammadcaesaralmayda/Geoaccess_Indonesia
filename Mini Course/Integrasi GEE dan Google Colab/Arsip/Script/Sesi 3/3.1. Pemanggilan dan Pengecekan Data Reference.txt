@@ -1,0 +1,38 @@
+# pemanggilan library
+from google.colab import files
+
+#------------------------------------------------------------------
+
+# unggah data
+uploaded = files.upload()
+
+filename = next(iter(uploaded))
+
+df = pd.read_csv(filename)
+
+print("Data berhasil dibaca.")
+print("Ukuran data:", df.shape)
+
+df.head()
+
+#------------------------------------------------------------------
+
+# CEK DISTRIBUSI KANOPI
+
+print("Statistik Canopy Cover:")
+print(df["canopy_cover"].describe())
+
+plt.figure(figsize=(8, 5))
+
+plt.hist(
+    df["canopy_cover"],
+    bins=20
+)
+
+plt.xlabel("Canopy Cover (%)")
+plt.ylabel("Jumlah Titik")
+plt.title("Distribusi Kerapatan Kanopi")
+
+plt.show()
+
+#------------------------------------------------------------------
