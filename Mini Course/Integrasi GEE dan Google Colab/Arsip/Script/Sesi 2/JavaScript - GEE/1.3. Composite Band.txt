@@ -1,0 +1,3 @@
+var composite = s2_clean
+  .median()
+  .clip(aoi);
