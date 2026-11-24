@@ -1,0 +1,42 @@
+# Ambil 9 band spektral
+bands = [
+    'B2', 'B3', 'B4',
+    'B5', 'B6', 'B7',
+    'B8', 'B11', 'B12'
+]
+
+spectral = geemap.ee_to_numpy(
+    predictors.select(bands),
+    region=predictors.geometry(),
+    scale=100
+)
+
+# Buat figure 3 x 3
+fig, axes = plt.subplots(3, 3, figsize=(15, 15))
+
+# Ubah axes menjadi 1 dimensi
+axes = axes.flatten()
+
+for i, band in enumerate(bands):
+
+    im = axes[i].imshow(
+        spectral[:, :, i],
+        vmin=0,
+        vmax=0.4,
+        cmap='viridis'
+    )
+
+    axes[i].set_title(band)
+    axes[i].axis('off')
+
+    cbar = fig.colorbar(
+        im,
+        ax=axes[i],
+        fraction=0.046,
+        pad=0.04
+    )
+
+    cbar.set_label('Reflectance')
+
+plt.tight_layout()
+plt.show()
