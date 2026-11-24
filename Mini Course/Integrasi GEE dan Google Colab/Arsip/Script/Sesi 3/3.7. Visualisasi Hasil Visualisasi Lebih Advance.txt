@@ -1,0 +1,194 @@
+!pip install -q contextily
+
+import geopandas as gpd
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+import contextily as ctx
+
+from rasterio.transform import from_bounds
+from rasterio.warp import calculate_default_transform, reproject, Resampling
+
+# Mengambil data shapefile di GEE
+
+aoi_fc = ee.FeatureCollection(
+    'projects/ratnageoaccess/assets/Gunungkidul_UTM'
+)
+
+aoi_gdf = geemap.ee_to_gdf(aoi_fc)
+
+print(aoi_gdf.crs)
+
+# Bounding box AOI
+bounds = aoi_gdf.to_crs("EPSG:4326").total_bounds
+
+xmin, ymin, xmax, ymax = bounds
+
+height, width = canopy_map_masked.shape
+
+transform = from_bounds(
+    xmin,
+    ymin,
+    xmax,
+    ymax,
+    width,
+    height
+)
+
+print("Raster:", width, "x", height)
+print("Bounds:", bounds)
+
+src_crs = "EPSG:4326"
+dst_crs = "EPSG:3857"
+
+dst_transform, dst_width, dst_height = calculate_default_transform(
+    src_crs,
+    dst_crs,
+    width,
+    height,
+    xmin,
+    ymin,
+    xmax,
+    ymax
+)
+
+canopy_3857 = np.full(
+    (dst_height, dst_width),
+    np.nan,
+    dtype=np.float32
+)
+
+reproject(
+    source=canopy_map_masked.astype(np.float32),
+    destination=canopy_3857,
+    src_transform=transform,
+    src_crs=src_crs,
+    dst_transform=dst_transform,
+    dst_crs=dst_crs,
+    resampling=Resampling.bilinear,
+    src_nodata=np.nan,
+    dst_nodata=np.nan
+)
+
+fig, ax = plt.subplots(
+    figsize=(12, 10),
+    dpi=200
+)
+
+# AOI ke Web Mercator
+aoi_plot = aoi_gdf.to_crs("EPSG:3857")
+
+# Extent raster
+left = dst_transform.c
+top = dst_transform.f
+right = left + dst_transform.a * dst_width
+bottom = top + dst_transform.e * dst_height
+
+extent = [
+    left,
+    right,
+    bottom,
+    top
+]
+
+
+# CANOPY COVER
+
+cmap = plt.cm.viridis.copy()
+cmap.set_bad(alpha=0)
+
+im = ax.imshow(
+    canopy_3857,
+    extent=extent,
+    cmap=cmap,
+    vmin=0,
+    vmax=100,
+    alpha=0.75,
+    zorder=2
+)
+
+# BASEMAP
+
+ctx.add_basemap(
+    ax,
+    source=ctx.providers.Esri.WorldImagery,
+    zoom='auto',
+    alpha=0.65
+)
+
+# AOI BOUNDARY
+
+aoi_plot.boundary.plot(
+    ax=ax,
+    color="white",
+    linewidth=1.5,
+    zorder=4
+)
+
+
+# COLORBAR
+
+cbar = fig.colorbar(
+    im,
+    ax=ax,
+    shrink=0.65,
+    pad=0.02
+)
+
+cbar.set_label(
+    "Canopy Cover (%)",
+    fontsize=11
+)
+
+# JUDUL
+
+ax.set_title(
+    "Prediksi Canopy Cover",
+    fontsize=20,
+    fontweight="bold",
+    pad=15
+)
+
+ax.text(
+    0.5,
+    1.01,
+    "XGBoost Regression using Sentinel-2 Spectral and Vegetation Indices",
+    transform=ax.transAxes,
+    ha="center",
+    fontsize=11
+)
+
+# ARAH UTARA
+
+ax.annotate(
+    "N",
+    xy=(0.94, 0.88),
+    xytext=(0.94, 0.78),
+    xycoords="axes fraction",
+    ha="center",
+    va="center",
+    fontsize=16,
+    fontweight="bold",
+    arrowprops=dict(
+        facecolor="black",
+        edgecolor="black",
+        width=4,
+        headwidth=12
+    )
+)
+
+# GRID
+
+ax.grid(
+    True,
+    linestyle="--",
+    linewidth=0.5,
+    alpha=0.4
+)
+
+# CLEAN FRAME
+
+ax.set_axis_off()
+
+plt.tight_layout()
+
+plt.show()
