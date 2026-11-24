@@ -1,0 +1,8 @@
+var savi = composite_veg.expression(
+  '((NIR - RED) / (NIR + RED + L)) * (1 + L)',
+  {
+    NIR: composite_veg.select('B8'),
+    RED: composite_veg.select('B4'),
+    L: 0.5
+  }
+).rename('SAVI');
