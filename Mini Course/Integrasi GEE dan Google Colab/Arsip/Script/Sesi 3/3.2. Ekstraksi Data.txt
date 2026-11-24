@@ -1,0 +1,73 @@
+print(df['.geo'].iloc[0])
+
+#------------------------------------------------------------------
+
+# mengubah data kanopi menjadi ee feature
+""" Hal ini perlu karena sampleRegions() di GEE membutuhkan sekumpulan feature/titik referensi sebagai collection."""
+
+import ee
+import json
+
+features = []
+
+for _, row in df.iterrows():
+
+    geojson = json.loads(row['.geo'])
+
+    # Ambil koordinat dari GeoJSON
+    coordinates = geojson['coordinates']
+
+    # Buat titik Earth Engine
+    point = ee.Geometry.Point(coordinates)
+
+    # Buat feature + target canopy cover
+    feature = ee.Feature(
+        point,
+        {
+            'canopy_cover': float(row['canopy_cover'])
+        }
+    )
+
+    features.append(feature)
+
+reference = ee.FeatureCollection(features)
+
+print(
+    "Jumlah titik reference:",
+    reference.size().getInfo()
+)
+
+#------------------------------------------------------------------
+
+# Ekstraksi
+samples = predictors.sampleRegions(
+    collection=reference,
+    properties=['canopy_cover'],
+    scale=10,
+    geometries=True
+)
+
+df_ml = geemap.ee_to_df(samples)
+
+print("Shape dataset ML:", df_ml.shape)
+
+df_ml.head()
+
+#------------------------------------------------------------------
+# cek missing value
+
+print("Shape:", df_ml.shape)
+
+print("\nMissing values:")
+
+print(df_ml.isnull().sum())
+
+print("\nStatistik canopy cover:")
+
+print(df_ml['canopy_cover'].describe())
+
+print("\nJumlah data reference awal:", len(df))
+
+print("Jumlah data hasil ekstraksi:", len(df_ml))
+
+"""terjadi karena ada threshold ndvi 0.4"""
