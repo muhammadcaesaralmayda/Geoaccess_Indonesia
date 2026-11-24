@@ -1,0 +1,8 @@
+var evi = composite_veg.expression(
+  '2.5 * ((NIR - RED) / (NIR + 6 * RED - 7.5 * BLUE + 1))',
+  {
+    NIR: composite_veg.select('B8'),
+    RED: composite_veg.select('B4'),
+    BLUE: composite_veg.select('B2')
+  }
+).rename('EVI');
