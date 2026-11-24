@@ -1,0 +1,88 @@
+fig, axes = plt.subplots(1, 4, figsize=(20, 5))
+
+# =========================
+# 1. NDVI
+# =========================
+im1 = axes[0].imshow(
+    indices[:, :, 0],
+    vmin=-1,
+    vmax=1,
+    cmap='RdYlGn'
+)
+axes[0].set_title('NDVI')
+axes[0].axis('off')
+
+cbar1 = fig.colorbar(
+    im1,
+    ax=axes[0],
+    fraction=0.046,
+    pad=0.04
+)
+cbar1.set_label('NDVI')
+
+
+# =========================
+# 2. EVI
+# =========================
+im2 = axes[1].imshow(
+    indices[:, :, 1],
+    vmin=-1,
+    vmax=1,
+    cmap='RdYlGn'
+)
+axes[1].set_title('EVI')
+axes[1].axis('off')
+
+cbar2 = fig.colorbar(
+    im2,
+    ax=axes[1],
+    fraction=0.046,
+    pad=0.04
+)
+cbar2.set_label('EVI')
+
+
+# =========================
+# 3. SAVI
+# =========================
+im3 = axes[2].imshow(
+    indices[:, :, 2],
+    vmin=-1,
+    vmax=1,
+    cmap='RdYlGn'
+)
+axes[2].set_title('SAVI')
+axes[2].axis('off')
+
+cbar3 = fig.colorbar(
+    im3,
+    ax=axes[2],
+    fraction=0.046,
+    pad=0.04
+)
+cbar3.set_label('SAVI')
+
+
+# =========================
+# 4. NDRE
+# =========================
+im4 = axes[3].imshow(
+    indices[:, :, 3],
+    vmin=-1,
+    vmax=1,
+    cmap='RdYlGn'
+)
+axes[3].set_title('NDRE')
+axes[3].axis('off')
+
+cbar4 = fig.colorbar(
+    im4,
+    ax=axes[3],
+    fraction=0.046,
+    pad=0.04
+)
+cbar4.set_label('NDRE')
+
+
+plt.tight_layout()
+plt.show()
