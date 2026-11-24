@@ -1,0 +1,18 @@
+function maskS2(image) {
+
+  var scl = image.select('SCL');
+
+  var mask = scl.neq(3)    // Cloud shadow
+    .and(scl.neq(8))       // Cloud medium probability
+    .and(scl.neq(9))       // Cloud high probability
+    .and(scl.neq(10))      // Cirrus
+    .and(scl.neq(11));     // Snow / ice
+
+  return image
+    .updateMask(mask)
+    .divide(10000);
+}
+
+var s2_clean = s2.map(maskS2);
+
+// filter awan = mengurangi jumlah citra yang terlalu berawan, sedangkan cloud masking = membersihkan piksel bermasalah dari citra yang sudah dipilih.
