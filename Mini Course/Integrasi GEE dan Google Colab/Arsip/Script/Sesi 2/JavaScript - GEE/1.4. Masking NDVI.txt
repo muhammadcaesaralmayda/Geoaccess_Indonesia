@@ -1,0 +1,26 @@
+var ndvi = composite
+  .normalizedDifference(['B8', 'B4'])
+  .rename('NDVI');
+
+
+// NDVI > 0.4 dianggap sebagai area vegetasi
+var vegetationMask = ndvi.gt(0.4);
+
+print('Vegetation mask:', vegetationMask);
+
+// Hanya area vegetasi yang dipertahankan
+var composite_veg = composite
+  .updateMask(vegetationMask);
+
+// Visualisasi Area Vegetasi
+Map.centerObject(aoi, 10);
+
+Map.addLayer(
+  composite_veg,
+  {
+    bands: ['B4', 'B3', 'B2'],
+    min: 0,
+    max: 0.3
+  },
+  'Sentinel-2 Vegetation Area'
+);
