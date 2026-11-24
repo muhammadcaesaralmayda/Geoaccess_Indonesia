@@ -1,0 +1,47 @@
+import numpy as np
+import rasterio
+from rasterio.transform import from_bounds
+
+# Ukuran raster
+height, width = canopy_map_masked.shape
+
+# Ambil extent dari predictor
+bounds = predictors.geometry().bounds().getInfo()['coordinates'][0]
+
+xmin = min(p[0] for p in bounds)
+xmax = max(p[0] for p in bounds)
+ymin = min(p[1] for p in bounds)
+ymax = max(p[1] for p in bounds)
+
+transform = from_bounds(
+    xmin, ymin,
+    xmax, ymax,
+    width, height
+)
+
+# Ubah NaN menjadi NoData
+output_array = np.where(
+    np.isnan(canopy_map_masked),
+    -9999,
+    canopy_map_masked
+).astype('float32')
+
+# Simpan GeoTIFF
+output_path = '/content/canopy_cover_prediction.tif'
+
+with rasterio.open(
+    output_path,
+    'w',
+    driver='GTiff',
+    height=height,
+    width=width,
+    count=1,
+    dtype='float32',
+    crs='EPSG:4326',
+    transform=transform,
+    nodata=-9999
+) as dst:
+
+    dst.write(output_array, 1)
+
+print("GeoTIFF berhasil disimpan:", output_path)
