@@ -1,0 +1,53 @@
+# menjadikan bentuk array
+array = geemap.ee_to_numpy(
+    predictors,
+    region=predictors.geometry(),
+    scale=100
+)
+
+print(array.shape)
+
+# Ambil indeks vegetasi
+indices = geemap.ee_to_numpy(
+    predictors.select(['NDVI', 'EVI', 'SAVI', 'NDRE']),
+    region=predictors.geometry(),
+    scale=100
+)
+
+rgb = geemap.ee_to_numpy(
+    predictors.select(['B4', 'B3', 'B2']),
+    region=predictors.geometry(),
+    scale=100
+)
+
+print("RGB shape:", rgb.shape)
+print("Indices shape:", indices.shape)
+
+// opsional yang ini:
+import numpy as np
+print("RGB shape:", rgb.shape)
+print("B4 min:", np.nanmin(rgb[:, :, 0]))
+print("B4 max:", np.nanmax(rgb[:, :, 0]))
+print("B3 min:", np.nanmin(rgb[:, :, 1]))
+print("B3 max:", np.nanmax(rgb[:, :, 1]))
+print("B2 min:", np.nanmin(rgb[:, :, 2]))
+print("B2 max:", np.nanmax(rgb[:, :, 2]))
+
+// script kembali ke menampilkan citra lagi
+
+rgb_stretch = np.zeros_like(rgb)
+
+for i in range(3):
+    p2 = np.nanpercentile(rgb[:, :, i], 2)
+    p98 = np.nanpercentile(rgb[:, :, i], 98)
+
+    rgb_stretch[:, :, i] = np.clip(
+        (rgb[:, :, i] - p2) / (p98 - p2),
+        0, 1
+    )
+
+plt.figure(figsize=(6, 6))
+plt.imshow(rgb_stretch)
+plt.title('True Color\n(B4-B3-B2)')
+plt.axis('off')
+plt.show()
