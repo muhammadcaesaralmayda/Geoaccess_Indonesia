@@ -1,0 +1,16 @@
+!pip install -q earthengine-api geemap
+
+#earthengine-api: supaya Python bisa berkomunikasi dengan Google Earth Engine
+#geemap: membantu mengakses/menampilkan data geospasial GEE di Python
+
+# import dan akses GEE
+import ee
+import geemap
+
+"""Karena Pandas, NumPy, dan Matplotlib sudah biasanya tersedia di environment 
+Google Colab. 
+Jadi mereka nggak perlu ditulis di pip install."""
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
